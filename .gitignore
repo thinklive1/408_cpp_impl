@@ -3,6 +3,7 @@
 !*.cpp
 linear_list
 node_list
+node_test
 *.d
 
 # Compiled Object files

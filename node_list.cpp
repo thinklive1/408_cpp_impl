@@ -16,7 +16,7 @@ struct DoubleLNode
 typedef LNode *LinkList;
 typedef DoubleLNode *DLinkList;
 
-// 遍历且打印链表
+// 遍历且打印链表,略过头结点
 void print_linklist(LinkList L)
 {
     L = L->next;
@@ -106,5 +106,5 @@ LNode *LocateElem_byno(LinkList L, int i)
     return p;
 }
 
-//插入删除略
+//插入删除略,删除时要用delete回收内存！！！
 
