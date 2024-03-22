@@ -1,30 +1,60 @@
 #include <iostream>
 using namespace std;
-struct LNode { //定义单链表结点类型
-	int data=0; //数据域
-	struct LNode *next=NULL; //指针域
+struct LNode
+{                              // 定义单链表结点类型
+    int data = 0;              // 数据域
+    struct LNode *next = NULL; // 指针域
 };
-typedef LNode* LinkList;
 
-void print_linklist(LinkList& L) {
-    int i=1;
-    while (L!=NULL)
+struct DoubleLNode
+{                                     // 定义双链表结点类型
+    int data = 0;                     // 数据域
+    struct DoubleLNode *prior = NULL; // 指针域
+    struct DoubleLNode *next = NULL;  // 指针域
+};
+
+typedef LNode *LinkList;
+typedef DoubleLNode *DLinkList;
+
+// 遍历且打印链表
+void print_linklist(LinkList L)
+{
+    L = L->next;
+    int i = 1;
+    while (L != NULL)
     {
-        cout << i++ <<":" << L->data << endl;
-        L=L->next;
+        cout << i++ << ":" << L->data << endl;
+        L = L->next;
     }
-    
 }
 
-LinkList List_HeadInsert(LinkList& L){
-	LNode* s;
-	int x;
+//根据数组以尾插法生成链表
+LinkList build_nodelist(LinkList &L, int lst[], int length)
+{
+    LNode *r = L;
+    for (int i = 0; i < length; i++)
+    {
+        LNode *s = new LNode; // 创建新结点
+        s->data = lst[i];
+        r->next = s;
+        r = s;
+    }
+    r->next = NULL;
+    return L;
+}
+
+//头插法生成链表，即遍历顺序和输入顺序相反
+LinkList List_HeadInsert(LinkList &L)
+{
+    LNode *s;
+    int x;
     cout << "输入结点的值:" << endl;
-	cin >> x;//输入结点的值
-	while(x != 9999){//输入9999表示结束
-	    s = new LNode;//创建新结点
-	    s->data = x;
-	    s->next = L->next;
+    cin >> x; // 输入结点的值
+    while (x != 9999)
+    {                  // 输入9999表示结束
+        s = new LNode; // 创建新结点
+        s->data = x;
+        s->next = L->next;
         L->next = s; // 将新结点插入表中,L为头指针
         cout << "输入结点的值:" << endl;
         cin >> x; // 输入结点的值
@@ -32,15 +62,16 @@ LinkList List_HeadInsert(LinkList& L){
     return L;
 }
 
-LinkList ListTailInsert(LinkList &L)
+//尾插法生成链表，即遍历顺序和输入顺序一致
+LinkList List_TailInsert(LinkList &L)
 {
     int x;
-    LNode *s, *r = L;
+    LNode *r = L;
     cout << "输入结点的值:" << endl;
     cin >> x; // 输入结点的值
     while (x != 9999)
     {
-        s = new LNode;
+        LNode *s = new LNode;
         s->data = x;
         r->next = s;
         r = s; // r指向新的表尾结点
@@ -51,13 +82,38 @@ LinkList ListTailInsert(LinkList &L)
     return L;
 }
 
-int main() {
-    LinkList nodes= new LNode;
-    //List_HeadInsert(nodes);
-    print_linklist(nodes);
+//按值查找节点，不存在返回NULL
+LNode *LocateElem_byval(LinkList L, int e)
+{
+    LNode *p = L->next;
+    while (p != NULL && p->data != e) // 从第1个结点开始查找data域为e的结点
+        p = p->next;
+    return p; // 找到后返回该结点指针，否则返回NULL
 }
 
+//按序号定位结点，如果越界返回NULL
+LNode *LocateElem_byno(LinkList L, int i)
+{
+    if (i < 1)
+        return NULL;
+    int j = 1;
+    LNode *p = L->next;
+    while (p != NULL && j < i)
+    {
+        p = p->next;
+        j++;
+    }
+    return p;
+}
 
+//插入删除略
 
-
-
+int main()
+{
+    int temp[8] = {2, 3, 17, 22, 23, 25, 42, 67};
+    LinkList nodes = new LNode;
+    build_nodelist(nodes, temp, sizeof(temp) / sizeof(temp[0]));
+    // List_HeadInsert(nodes);
+    // List_TailInsert(nodes);
+    print_linklist(nodes);
+}
