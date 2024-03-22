@@ -1,5 +1,8 @@
 .vscode
 # Prerequisites
+!*.cpp
+linear_list
+node_list
 *.d
 
 # Compiled Object files
