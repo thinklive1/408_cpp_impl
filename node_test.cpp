@@ -43,16 +43,30 @@ LinkList remove_head(LinkList head) {
 
 //4.在带头结点的单链表L中删除一个最小值结点(假设唯一)
 void del_min_withhead(LinkList L) {
+    if (L->next==NULL) return;
+    LinkList prev=L;
+    L=L->next;
+    LinkList min_node,min_prev;
+    int min_val=INT16_MAX;
+    while(L!=NULL) {
+        if (L->data<min_val) min_node=L,min_prev=prev,min_val=L->data;
+        prev=L;
+        L=L->next;
+    }
+    min_prev->next=min_node->next;
+    delete min_node;
+    cout << "删除的节点值为:" << min_val << endl;
 
 }
 
 
 int main() {
-    int temp[8] = {2, 3, 17, 22, 22, 25, 22, 67};
+    int temp[8] = {2, 3, 17, 22, 22, 1, 22, 67};
     LinkList nodes = new LNode;
     build_nodelist(nodes, temp, sizeof(temp) / sizeof(temp[0]));//生成带头结点的测试链表
     //del_by_val(nodes->next,22);//传入头结点的next就可以视为无头结点链表
     //del_by_val_withhead(nodes,22);
-    print_linklist_rev(remove_head(nodes));
+    //print_linklist_rev(remove_head(nodes));
+    //del_min_withhead(nodes);
     print_linklist(nodes);
 }
