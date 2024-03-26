@@ -183,30 +183,98 @@ pair<LinkList, LinkList> tear_list(LinkList L) {
             signal = 0;
             q->next = L1head->next;
             L1head->next = q;
-            q = temp;
         }
         else {
             signal = 1;
             q->next = L2head->next;
             L2head->next = q;
-            q = temp;
         }
+        q=temp;
     }
     return make_pair(L1head, L2head);
 }
 
 //11.C= {a1, b1,...,an,bn}线性表，采用带头结点的单链表存放，设计一个就地算法，将其拆分为两个线性表，使得A = (a1 a2,,,an}, B= bn,,,b2,b1}
+//即一个头插法，一个尾插法
+pair<LinkList,LinkList> tear_list_rev(LinkList L) {
+    LinkList L1head = new LNode,L1tail=L1head, L2head =L;
+    LinkList node = L->next;
+    L2head->next=NULL;
+    int signal=0;
+    while (node !=NULL) {
+        LinkList temp = node->next;
+        if (signal==0) {
+            signal=1;
+            L1tail->next=node;
+            L1tail=node;
+            L1tail->next=NULL;
+        }
+        else {
+            signal=0;
+            node->next=L2head->next;
+            L2head->next=node;
+        }
+        node =temp;
+    }
+    return make_pair(L1head,L2head);
+}
+
+//12.递增有序的线性表去除重复元素
+void remove_samepart_list(LinkList L) {
+    LinkList prev = L->next, q = prev->next;
+    while (prev->next!=NULL) {
+        q=prev->next;
+        if (prev->data==q->data) {
+            prev->next=q->next;
+            delete q;
+            continue;
+        }
+        prev=prev->next;
+    }
+}
+
+/*13.两个按元素值递增次序排列的单链表,归并为一个按元素值递增次序排列的单链表，不创造新节点
+如果是递减版本，则需要使用头插法
+*/
+LinkList merge_and_sort(LinkList L1, LinkList L2) {
+    LinkList l1node = L1->next,l2node = L2->next,l1tail=L1;
+    L1->next=NULL;
+    while (l1node!=NULL && l2node!=NULL) {
+        LinkList temp;
+        if (l1node->data<l2node->data) {
+            l1tail->next=l1node;
+            l1tail=l1node;
+            l1node=l1node->next;
+            l1tail->next=NULL;
+        }
+        else {
+            l1tail->next=l2node;
+            l1tail=l2node;
+            l2node = l2node->next;
+            l1tail->next=NULL;
+        }
+    }
+    l1tail->next=(l1node==NULL)?l2node:l1node;
+    delete L2;
+    return L1;
+}
+
+//14.4和B是两个递增有序单链表，用其公共元素产生一个新链表
+LinkList build_list_from_public(LinkList L1,LinkList L2) {
+    return L1;
+}
+
 
 int main() {
-    int temp[8] = { 2, 3, 17, 23, 28, 31, 42, 67 };
-    int temp2[3] = { 6,26, 37 };
+    int temp[8] = { 2, 3, 17, 23, 26, 33, 37, 67 };
+    int temp2[3] = { 6,26, 28 };
     LinkList nodes = new LNode;
     LinkList nodes2 = new LNode;
     build_nodelist(nodes, temp,
         sizeof(temp) / sizeof(temp[0]));  // 生成带头结点的测试链表
     build_nodelist(nodes2, temp2,
         sizeof(temp2) / sizeof(temp2[0]));  // 生成带头结点的测试链表
-    nodes2 = merge_list(nodes2, nodes);
+    //nodes2 = merge_list(nodes2, nodes);
     // del_by_val(nodes->next,22);//传入头结点的next就可以视为无头结点链表
     // del_by_val_withhead(nodes,22);
     // print_linklist_rev(remove_head(nodes));
@@ -219,5 +287,10 @@ int main() {
 /*     auto listpair = tear_list(nodes);
     print_linklist(listpair.first);
     print_linklist(listpair.second); */
+/*     auto nodespair = tear_list_rev(nodes);
+    print_linklist(nodespair.first);
+    print_linklist(nodespair.second); */
+    //remove_samepart_list(nodes);
+    nodes = merge_and_sort(nodes2,nodes);
     print_linklist(nodes);
 }
