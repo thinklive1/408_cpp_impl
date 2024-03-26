@@ -259,7 +259,7 @@ LinkList merge_and_sort(LinkList L1, LinkList L2) {
     return L1;
 }
 
-//14.4和B是两个递增有序单链表，用其公共元素产生一个新链表
+//14.两个递增有序单链表，用其公共元素产生一个新链表
 LinkList build_list_from_public(LinkList L1, LinkList L2) {
     return L1;
 }
