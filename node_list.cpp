@@ -108,3 +108,9 @@ LNode *LocateElem_byno(LinkList L, int i)
 
 //插入删除略,删除时要用delete回收内存！！！
 
+LinkList merge_list(LinkList head,LinkList tail) {
+    LinkList temp=head;
+    while(temp->next!=NULL) temp=temp->next;
+    temp->next=tail->next;
+    return head;
+}
