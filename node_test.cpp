@@ -174,8 +174,7 @@ void print_and_del_sorted_list(LinkList& L) {
 //10.将一个带头结点的单链表按奇偶分解成两个链表
 pair<LinkList, LinkList> tear_list(LinkList L) {
     int signal = 1;
-    LinkList L1 = new LNode;
-    LinkList L1head = L1, L2head = L;
+    LinkList L1head = new LNode, L2head = L;
     LinkList q = L->next;
     L->next = NULL;
     while (q != NULL) {
