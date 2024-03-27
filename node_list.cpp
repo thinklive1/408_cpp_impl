@@ -1,13 +1,11 @@
 #include <iostream>
 using namespace std;
-struct LNode
-{                              // 定义单链表结点类型
+struct LNode {                              // 定义单链表结点类型
     int data = 0;              // 数据域
     struct LNode* next = NULL; // 指针域
 };
 
-struct DoubleLNode
-{                                     // 定义双链表结点类型
+struct DoubleLNode {                                     // 定义双链表结点类型
     int data = 0;                     // 数据域
     struct DoubleLNode* prior = NULL; // 指针域
     struct DoubleLNode* next = NULL;  // 指针域
@@ -17,23 +15,42 @@ typedef LNode* LinkList;
 typedef DoubleLNode* DLinkList;
 
 // 遍历且打印链表,略过头结点
-void print_linklist(LinkList L)
-{
+void print_linklist(LinkList L) {
     L = L->next;
     int i = 1;
-    while (L != NULL)
-    {
+    while (L != NULL) {
+        cout << i++ << ":" << L->data << endl;
+        L = L->next;
+    }
+}
+
+// 遍历且打印循环单链表,略过头结点
+void print_loop_linklist(LinkList L) {
+    LinkList head = L;
+    L = L->next;
+    if (L == NULL) return;
+    int i = 1;
+    while (L != head) {
+        cout << i++ << ":" << L->data << endl;
+        L = L->next;
+    }
+}
+
+//遍历且打印循环双链表
+void print_linklist(DLinkList L) {
+    DLinkList head = L;
+    L = L->next;
+    int i = 1;
+    while (L != head) {
         cout << i++ << ":" << L->data << endl;
         L = L->next;
     }
 }
 
 //根据数组以尾插法生成链表
-LinkList build_nodelist(LinkList& L, int lst[], int length)
-{
+LinkList build_nodelist(LinkList& L, int lst[], int length) {
     LNode* r = L;
-    for (int i = 0; i < length; i++)
-    {
+    for (int i = 0; i < length; i++) {
         LNode* s = new LNode; // 创建新结点
         s->data = lst[i];
         r->next = s;
@@ -43,15 +60,41 @@ LinkList build_nodelist(LinkList& L, int lst[], int length)
     return L;
 }
 
+//根据数组以尾插法生成循环单链表
+LinkList build_loop_list(LinkList& L, int lst[], int length) {
+    LNode* r = L;
+    for (int i = 0; i < length; i++) {
+        LNode* s = new LNode; // 创建新结点
+        s->data = lst[i];
+        r->next = s;
+        r = s;
+    }
+    r->next = L;
+    return L;
+}
+
+//根据数组以尾插法生成循环双链表
+DLinkList build_loop_double_list(DLinkList& L, int lst[], int length) {
+    DoubleLNode* r = L;
+    for (int i = 0; i < length; i++) {
+        DoubleLNode* s = new DoubleLNode; // 创建新结点
+        s->data = lst[i];
+        s->prior = r;
+        r->next = s;
+        r = s;
+    }
+    L->prior = r;
+    r->next = L;
+    return L;
+}
+
 //头插法生成链表，即遍历顺序和输入顺序相反
-LinkList List_HeadInsert(LinkList& L)
-{
+LinkList List_HeadInsert(LinkList& L) {
     LNode* s;
     int x;
     cout << "输入结点的值:" << endl;
     cin >> x; // 输入结点的值
-    while (x != 9999)
-    {                  // 输入9999表示结束
+    while (x != 9999) {                  // 输入9999表示结束
         s = new LNode; // 创建新结点
         s->data = x;
         s->next = L->next;
@@ -63,14 +106,12 @@ LinkList List_HeadInsert(LinkList& L)
 }
 
 //尾插法生成链表，即遍历顺序和输入顺序一致
-LinkList List_TailInsert(LinkList& L)
-{
+LinkList List_TailInsert(LinkList& L) {
     int x;
     LNode* r = L;
     cout << "输入结点的值:" << endl;
     cin >> x; // 输入结点的值
-    while (x != 9999)
-    {
+    while (x != 9999) {
         LNode* s = new LNode;
         s->data = x;
         r->next = s;
@@ -83,8 +124,7 @@ LinkList List_TailInsert(LinkList& L)
 }
 
 //按值查找节点，不存在返回NULL
-LNode* LocateElem_byval(LinkList L, int e)
-{
+LNode* LocateElem_byval(LinkList L, int e) {
     LNode* p = L->next;
     while (p != NULL && p->data != e) // 从第1个结点开始查找data域为e的结点
         p = p->next;
@@ -92,14 +132,12 @@ LNode* LocateElem_byval(LinkList L, int e)
 }
 
 //按序号定位结点，如果越界返回NULL
-LNode* LocateElem_byno(LinkList L, int i)
-{
+LNode* LocateElem_byno(LinkList L, int i) {
     if (i < 1)
         return NULL;
     int j = 1;
     LNode* p = L->next;
-    while (p != NULL && j < i)
-    {
+    while (p != NULL && j < i) {
         p = p->next;
         j++;
     }

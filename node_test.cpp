@@ -321,39 +321,68 @@ bool if_sonlist(LinkList parent, LinkList son) {
 }
 
 //17. 判断带头结点的循环双链表是否对称
-bool if_symmetry(LinkList L) {
-    return false;
+bool if_symmetry(DLinkList L) {
+    DLinkList lft = L->next, rht = L->prior;
+    while (lft != rht && lft != rht->next) {//边界有两种情况，偶数时，lft会跑到rht右边，奇数时，两者碰到一起
+        if (lft->data == rht->data) {
+            lft = lft->next;
+            rht = rht->prior;
+        }
+        else return false;
+    }
+    return true;
+}
+
+//18.两个循环单链表,将链表h2链接到链表hl之后，要求链接后的链表仍保持循环链表形式
+LinkList merge_loop_list(LinkList L1, LinkList L2) {
+    LinkList l1tail = L1, l2tail = L2;
+    while (l1tail->next != L1) l1tail = l1tail->next;
+    while (l2tail->next != L2) l2tail = l2tail->next;
+    l1tail->next = L2->next;
+    l2tail->next = L1;
+    return L1;
+}
+
+//19.反复找出循环单链表中结点值最小的结点并输出，然后将该结点从中删除，直到单链表空为止，再删除表头结点
+void find_and_del_minnode_loop(LinkList L) {
+
 }
 
 int main() {
-    int temp[8] = { 2, 3, 17, 3, 17, 23, 37, 67 };
+    int temp[8] = { 2, 3, 17, 33, 33, 127, 3, 2 };
     int temp2[3] = { 3,17, 23 };
     LinkList nodes = new LNode;
     LinkList nodes2 = new LNode;
-    build_nodelist(nodes, temp,
-        sizeof(temp) / sizeof(temp[0]));  // 生成带头结点的测试链表
-    build_nodelist(nodes2, temp2,
-        sizeof(temp2) / sizeof(temp2[0]));  // 生成带头结点的测试链表
-    //nodes2 = merge_list(nodes2, nodes);
-    // del_by_val(nodes->next,22);//传入头结点的next就可以视为无头结点链表
-    // del_by_val_withhead(nodes,22);
-    // print_linklist_rev(remove_head(nodes));
-    // del_min_withhead(nodes);
-    //nodes = rev_insite_withhead(nodes);
-    //insertsort_list(nodes);
-    //del_val_inrange(nodes,10,30);
-    //find_public_node(nodes,nodes2);
-    //print_and_del_sorted_list(nodes2);
-/*     auto listpair = tear_list(nodes);
-    print_linklist(listpair.first);
-    print_linklist(listpair.second); */
-    /*     auto nodespair = tear_list_rev(nodes);
-        print_linklist(nodespair.first);
-        print_linklist(nodespair.second); */
-        //remove_samepart_list(nodes);
-    //nodes = merge_and_sort(nodes2, nodes);
-    //print_linklist(build_list_from_public(nodes,nodes2));
-    //print_linklist(list_intersection(nodes,nodes2));
-    //cout << "A is B's parent?" << if_sonlist(nodes, nodes2) << endl;
-    print_linklist(nodes);
+    /*     build_nodelist(nodes, temp,
+            sizeof(temp) / sizeof(temp[0]));  // 生成带头结点的测试链表
+        build_nodelist(nodes2, temp2,
+            sizeof(temp2) / sizeof(temp2[0]));  // 生成带头结点的测试链表 */
+            /*     DLinkList doublelist = new DoubleLNode;
+                build_loop_double_list(doublelist, temp, sizeof(temp) / sizeof(temp[0])); */
+                //nodes2 = merge_list(nodes2, nodes);
+                // del_by_val(nodes->next,22);//传入头结点的next就可以视为无头结点链表
+                // del_by_val_withhead(nodes,22);
+                // print_linklist_rev(remove_head(nodes));
+                // del_min_withhead(nodes);
+                //nodes = rev_insite_withhead(nodes);
+                //insertsort_list(nodes);
+                //del_val_inrange(nodes,10,30);
+                //find_public_node(nodes,nodes2);
+                //print_and_del_sorted_list(nodes2);
+            /*     auto listpair = tear_list(nodes);
+                print_linklist(listpair.first);
+                print_linklist(listpair.second); */
+                /*     auto nodespair = tear_list_rev(nodes);
+                    print_linklist(nodespair.first);
+                    print_linklist(nodespair.second); */
+                    //remove_samepart_list(nodes);
+                //nodes = merge_and_sort(nodes2, nodes);
+                //print_linklist(build_list_from_public(nodes,nodes2));
+                //print_linklist(list_intersection(nodes,nodes2));
+                //cout << "A is B's parent?" << if_sonlist(nodes, nodes2) << endl;
+                //cout << "symmetry? " << if_symmetry(doublelist) << endl;
+    //print_loop_linklist(merge_loop_list(build_loop_list(nodes, temp, sizeof(temp) / sizeof(temp[0])), build_loop_list(nodes2, temp2, sizeof(temp2) / sizeof(temp2[0]))));
+
+    //print_linklist(doublelist);
+    //print_linklist(nodes);
 }
