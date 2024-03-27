@@ -207,7 +207,6 @@ pair<LinkList, LinkList> tear_list_rev(LinkList L) {
             signal = 1;
             L1tail->next = node;
             L1tail = node;
-            L1tail->next = NULL;
         }
         else {
             signal = 0;
@@ -216,6 +215,7 @@ pair<LinkList, LinkList> tear_list_rev(LinkList L) {
         }
         node = temp;
     }
+    L1tail->next = NULL;
     return make_pair(L1head, L2head);
 }
 
@@ -245,13 +245,11 @@ LinkList merge_and_sort(LinkList L1, LinkList L2) {
             l1tail->next = l1node;
             l1tail = l1node;
             l1node = l1node->next;
-            l1tail->next = NULL;
         }
         else {
             l1tail->next = l2node;
             l1tail = l2node;
             l2node = l2node->next;
-            l1tail->next = NULL;
         }
     }
     l1tail->next = (l1node == NULL) ? l2node : l1node;
@@ -261,13 +259,75 @@ LinkList merge_and_sort(LinkList L1, LinkList L2) {
 
 //14.两个递增有序单链表，用其公共元素产生一个新链表
 LinkList build_list_from_public(LinkList L1, LinkList L2) {
+    LinkList prev1 = L1, prev2 = L2;
+    LinkList L3 = new LNode;
+    while (prev1->next != NULL && prev2->next != NULL) {
+        if (prev1->next->data == prev2->next->data) {
+            LinkList new_node = new LNode;
+            new_node->data = prev1->next->data;
+            new_node->next = L3->next;
+            L3->next = new_node;
+            prev1 = prev1->next;
+            prev2 = prev2->next;
+        }
+        else if (prev1->next->data < prev2->next->data) prev1 = prev1->next;
+        else prev2 = prev2->next;
+    }
+    return L3;
+}
+
+//15.两个链表分别表示两个集合，其元素递增排列，将其交集存放于A链表
+LinkList list_intersection(LinkList L1, LinkList L2) {
+    LinkList prev1 = L1, prev2 = L2, l1tail = L1;
+    while (prev1->next != NULL && prev2->next != NULL) {
+        if (prev1->next->data == prev2->next->data) {
+            l1tail->next = prev1->next;
+            l1tail = prev1->next;
+            prev1 = prev1->next;
+            prev2 = prev2->next;
+        }
+        else if (prev1->next->data < prev2->next->data) prev1 = prev1->next;
+        else prev2 = prev2->next;
+    }
+    l1tail->next = NULL;
     return L1;
 }
 
+/*16.两个链表分别是一个整数序列，判断B是否是A的子序列
+1. 不断比较两个先驱指针的next
+2. 若相等，同时后移
+3. 若不等，有两种可能，
+    1. 如果该节点是一个子序列的开始，则比较其后续节点与son的后续节点
+    2. 否则，比较其后续结点和son的开始节点
+*/
+bool if_sonlist(LinkList parent, LinkList son) {
+    LinkList sonhead = son;
+    while (parent->next != NULL) {
+        if (son->next == NULL) return true;
+        if (parent->next->data == son->next->data) {
+            parent = parent->next;
+            son = son->next;
+        }
+        else if (parent->next->data == sonhead->next->data) {
+            parent = parent->next;
+            son = sonhead->next;
+        }
+        else {
+            parent = parent->next;
+            son = sonhead;
+        }
+    }
+    return false;
+}
+
+//17. 判断带头结点的循环双链表是否对称
+bool if_symmetry(LinkList L) {
+    return false;
+}
 
 int main() {
-    int temp[8] = { 2, 3, 17, 23, 26, 33, 37, 67 };
-    int temp2[3] = { 6,26, 28 };
+    int temp[8] = { 2, 3, 17, 3, 17, 23, 37, 67 };
+    int temp2[3] = { 3,17, 23 };
     LinkList nodes = new LNode;
     LinkList nodes2 = new LNode;
     build_nodelist(nodes, temp,
@@ -291,6 +351,9 @@ int main() {
         print_linklist(nodespair.first);
         print_linklist(nodespair.second); */
         //remove_samepart_list(nodes);
-    nodes = merge_and_sort(nodes2, nodes);
+    //nodes = merge_and_sort(nodes2, nodes);
+    //print_linklist(build_list_from_public(nodes,nodes2));
+    //print_linklist(list_intersection(nodes,nodes2));
+    //cout << "A is B's parent?" << if_sonlist(nodes, nodes2) << endl;
     print_linklist(nodes);
 }
