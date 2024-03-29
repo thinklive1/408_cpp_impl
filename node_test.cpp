@@ -345,52 +345,88 @@ LinkList merge_loop_list(LinkList L1, LinkList L2) {
 
 //19.反复找出循环单链表中结点值最小的结点并输出，然后将该结点从中删除，直到单链表空为止，再删除表头结点
 void find_and_del_minnode_loop(LinkList L) {
-
+    LinkList node = L->next;
+    if (node == L) return;
+    LinkList min_node_prev = L, work_node = node;
+    while (work_node->next != L) {
+        if (work_node->next->data < min_node_prev->next->data) min_node_prev = work_node;
+        work_node = work_node->next;
+    }
+    cout << "del min_node:" << min_node_prev->next->data << endl;
+    LinkList temp = min_node_prev->next;
+    min_node_prev->next = min_node_prev->next->next;
+    delete temp;
+    find_and_del_minnode_loop(L);
 }
 
-void change_iter(int*& x) {
-    x = new int;
+//20.判断单链表是否有环
+bool if_has_cycle(LinkList L) {
+    LinkList slow = L, fast = L;
+    while (1) {
+        slow = slow->next;
+        fast = fast->next->next;
+        if (slow == fast) return true;
+        if (fast == NULL || fast->next == NULL) return false;
+    }
+    return false;
+}
+
+LNode* FindLoopStart(LNode* head) {
+    LNode* fast = head, * slow = head;
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next; //每次走一步
+        fast = fast->next->next; //每次走两步
+        if (slow == fast) break; //相遇
+    }
+    if (fast == NULL || fast->next == NULL)
+        return NULL; //没有环，返回NULL
+    LNode* pl = head, * p2 = slow;
+    while (pl != p2) {
+        //分别指向开始点、相遇点
+        pl = pl->next;
+        p2 = p2->next;
+    }
+    return pl; //返回入口点
 }
 
 int main() {
-    int x = 3;
-    int* x_iter = &x;
-    cout << x_iter << endl;
-    change_iter(x_iter);
-    cout << "after change" << x_iter << endl;
-    int temp[8] = { 2, 3, 17, 33, 33, 127, 3, 2 };
+    int temp[8] = { 2, 3, 17, 23, 33, 7, 63, 122 };
     int temp2[3] = { 3,17, 23 };
     LinkList nodes = new LNode;
     LinkList nodes2 = new LNode;
-    /*     build_nodelist(nodes, temp,
-            sizeof(temp) / sizeof(temp[0]));  // 生成带头结点的测试链表
-        build_nodelist(nodes2, temp2,
-            sizeof(temp2) / sizeof(temp2[0]));  // 生成带头结点的测试链表 */
-            /*     DLinkList doublelist = new DoubleLNode;
-                build_loop_double_list(doublelist, temp, sizeof(temp) / sizeof(temp[0])); */
-                //nodes2 = merge_list(nodes2, nodes);
-                // del_by_val(nodes->next,22);//传入头结点的next就可以视为无头结点链表
-                // del_by_val_withhead(nodes,22);
-                // print_linklist_rev(remove_head(nodes));
-                // del_min_withhead(nodes);
-                //nodes = rev_insite_withhead(nodes);
-                //insertsort_list(nodes);
-                //del_val_inrange(nodes,10,30);
-                //find_public_node(nodes,nodes2);
-                //print_and_del_sorted_list(nodes2);
-            /*     auto listpair = tear_list(nodes);
-                print_linklist(listpair.first);
-                print_linklist(listpair.second); */
-                /*     auto nodespair = tear_list_rev(nodes);
-                    print_linklist(nodespair.first);
-                    print_linklist(nodespair.second); */
-                    //remove_samepart_list(nodes);
-                //nodes = merge_and_sort(nodes2, nodes);
-                //print_linklist(build_list_from_public(nodes,nodes2));
-                //print_linklist(list_intersection(nodes,nodes2));
-                //cout << "A is B's parent?" << if_sonlist(nodes, nodes2) << endl;
-                //cout << "symmetry? " << if_symmetry(doublelist) << endl;
-    //print_loop_linklist(merge_loop_list(build_loop_list(nodes, temp, sizeof(temp) / sizeof(temp[0])), build_loop_list(nodes2, temp2, sizeof(temp2) / sizeof(temp2[0]))));
+    build_nodelist(nodes, temp,
+        sizeof(temp) / sizeof(temp[0]));  // 生成带头结点的测试链表
+    build_nodelist(nodes2, temp2,
+        sizeof(temp2) / sizeof(temp2[0]));  // 生成带头结点的测试链表 
+    /*     DLinkList doublelist = new DoubleLNode;
+        build_loop_double_list(doublelist, temp, sizeof(temp) / sizeof(temp[0])); */
+        //nodes2 = merge_list(nodes2, nodes);
+        // del_by_val(nodes->next,22);//传入头结点的next就可以视为无头结点链表
+        // del_by_val_withhead(nodes,22);
+        // print_linklist_rev(remove_head(nodes));
+        // del_min_withhead(nodes);
+        //nodes = rev_insite_withhead(nodes);
+        //insertsort_list(nodes);
+        //del_val_inrange(nodes,10,30);
+        //find_public_node(nodes,nodes2);
+        //print_and_del_sorted_list(nodes2);
+    /*     auto listpair = tear_list(nodes);
+        print_linklist(listpair.first);
+        print_linklist(listpair.second); */
+        /*     auto nodespair = tear_list_rev(nodes);
+            print_linklist(nodespair.first);
+            print_linklist(nodespair.second); */
+            //remove_samepart_list(nodes);
+        //nodes = merge_and_sort(nodes2, nodes);
+        //print_linklist(build_list_from_public(nodes,nodes2));
+        //print_linklist(list_intersection(nodes,nodes2));
+        //cout << "A is B's parent?" << if_sonlist(nodes, nodes2) << endl;
+        //cout << "symmetry? " << if_symmetry(doublelist) << endl;
+//print_loop_linklist(merge_loop_list(build_loop_list(nodes, temp, sizeof(temp) / sizeof(temp[0])), build_loop_list(nodes2, temp2, sizeof(temp2) / sizeof(temp2[0]))));
+//find_and_del_minnode_loop(build_loop_list(nodes, temp, sizeof(temp) / sizeof(temp[0])));
+    //cout << "has a cycle?" << if_has_cycle(nodes) << endl;
+
+
 
     //print_linklist(doublelist);
     //print_linklist(nodes);
