@@ -348,7 +348,16 @@ void find_and_del_minnode_loop(LinkList L) {
 
 }
 
+void change_iter(int*& x) {
+    x = new int;
+}
+
 int main() {
+    int x = 3;
+    int* x_iter = &x;
+    cout << x_iter << endl;
+    change_iter(x_iter);
+    cout << "after change" << x_iter << endl;
     int temp[8] = { 2, 3, 17, 33, 33, 127, 3, 2 };
     int temp2[3] = { 3,17, 23 };
     LinkList nodes = new LNode;
