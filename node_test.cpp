@@ -441,11 +441,35 @@ LinkList remove_sameabs(LinkList& L, int n) {
 
 //真题4.线性表L =（a1,a2,,an）采用带头结点的单链表保存,就地将其排序为(a1,an,a2,an-1,,,)
 LinkList resort_list(LinkList L) {
+    LinkList p = L, q = L, r;
+    while (q != NULL && q->next != NULL) {//寻找中点
+        q = q->next->next;
+        p = p->next;
+    }
+    q = p->next;//令q为后半段第一个节点
+    p->next = NULL;//断开前半段
+    while (q != NULL) {//逆置后半段
+        r = q->next;
+        q->next = p->next;
+        p->next = q;
+        q = r;
+    }
+    LinkList prev;
+    prev = L->next;//前半段第一个节点
+    q = p->next;//后半段第一个节点
+    while (q != NULL) {//也可以是prev!=p
+        r = q->next;//暂存的r是后半段链表下一个要处理的节点
+        q->next = prev->next;
+        prev->next = q;//将n-i+1号节点插入到i号节点后
+        prev = q->next;
+        q = r;
+    }
+    p->next = NULL;//最后形成的链表到p为止
     return L;
 }
 
 int main() {
-    int temp[8] = { 2, -2, 3, 23, 33, -2, -3, -33 };
+    int temp[8] = { 2, 12, 23, 33,54, 72, 83, 99 };
     int temp2[3] = { 3,17, 23 };
     LinkList nodes = new LNode;
     LinkList nodes2 = new LNode;
@@ -483,6 +507,7 @@ int main() {
     //find_k_rev_node(nodes, 8);
     //find_public_charnode(nodes, nodes2);
     //remove_sameabs(nodes, 200);
+    print_linklist(resort_list(nodes));
 
 
 

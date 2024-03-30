@@ -83,3 +83,4 @@ int main() {
     push(1, 1, s);
     pop(1, s);
 }
+
