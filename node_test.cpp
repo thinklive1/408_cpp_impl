@@ -419,8 +419,23 @@ LinkList find_public_charnode(LinkList L1, LinkList L2) {
     return longer;
 }
 
-//真题3.用单链表保存m个整数,对于链表中data的绝对值相等的结点，仅保留第一次出现的结点而删除其余绝对值相等的结点
-LinkList remove_sameabs(LinkList& L) {
+//真题3.用单链表保存m个整数,其绝对值均小于n,对于链表中data的绝对值相等的结点，仅保留第一次出现的结点而删除其余绝对值相等的结点
+LinkList remove_sameabs(LinkList& L, int n) {
+    bool bucket[n];
+    for (int i = 0;i < n;i++) bucket[i] = 0;
+    LinkList prev = L;
+    while (prev->next != NULL) {
+        if (bucket[abs(prev->next->data)] == true) {
+            LinkList temp = prev->next;
+            prev->next = prev->next->next;
+            delete temp;
+        }
+        else {
+            bucket[abs(prev->next->data)] = true;
+            prev = prev->next;
+        }
+    }
+    print_linklist(L);
     return L;
 }
 
@@ -430,7 +445,7 @@ LinkList resort_list(LinkList L) {
 }
 
 int main() {
-    int temp[8] = { 2, 3, 17, 23, 33, 7, 63, 122 };
+    int temp[8] = { 2, -2, 3, 23, 33, -2, -3, -33 };
     int temp2[3] = { 3,17, 23 };
     LinkList nodes = new LNode;
     LinkList nodes2 = new LNode;
@@ -467,6 +482,7 @@ int main() {
     //cout << "has a cycle?" << if_has_cycle(nodes) << endl;
     //find_k_rev_node(nodes, 8);
     //find_public_charnode(nodes, nodes2);
+    //remove_sameabs(nodes, 200);
 
 
 
