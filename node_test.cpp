@@ -389,6 +389,46 @@ LNode* FindLoopStart(LNode* head) {
     return pl; //返回入口点
 }
 
+//真题1.查找带头结点的链表中倒数第k个位置上的结点
+int find_k_rev_node(LinkList L, int k) {
+    LinkList prev = L, after = L;
+    for (int i = 0;i < k;i++) {
+        if (after == NULL) return 0;
+        after = after->next;
+    }
+    while (after != NULL) {
+        after = after->next;
+        prev = prev->next;
+    }
+    cout << "the node is:" << prev->data << endl;
+    return 1;
+}
+
+//真题2.strl和str2分别指向两个单词所在单链表的头结点，找出由strl和str2所指向两个链表共同后缀的起始位置
+LinkList find_public_charnode(LinkList L1, LinkList L2) {
+    if (L1->next == NULL || L2->next == NULL) return NULL;
+    int len1 = len_of_list(L1->next), len2 = len_of_list(L2->next);
+    LinkList longer = (len1 > len2) ? L1->next : L2->next;
+    LinkList shorter = (len1 > len2) ? L2->next : L1->next;
+    for (int i = 0;i < abs(len1 - len2);i++) longer = longer->next;
+    while (longer != NULL) {
+        if (longer == shorter) return longer;
+        longer = longer->next;
+        shorter = shorter->next;
+    }
+    return longer;
+}
+
+//真题3.用单链表保存m个整数,对于链表中data的绝对值相等的结点，仅保留第一次出现的结点而删除其余绝对值相等的结点
+LinkList remove_sameabs(LinkList& L) {
+    return L;
+}
+
+//真题4.线性表L =（a1,a2,,an）采用带头结点的单链表保存,就地将其排序为(a1,an,a2,an-1,,,)
+LinkList resort_list(LinkList L) {
+    return L;
+}
+
 int main() {
     int temp[8] = { 2, 3, 17, 23, 33, 7, 63, 122 };
     int temp2[3] = { 3,17, 23 };
@@ -425,6 +465,9 @@ int main() {
 //print_loop_linklist(merge_loop_list(build_loop_list(nodes, temp, sizeof(temp) / sizeof(temp[0])), build_loop_list(nodes2, temp2, sizeof(temp2) / sizeof(temp2[0]))));
 //find_and_del_minnode_loop(build_loop_list(nodes, temp, sizeof(temp) / sizeof(temp[0])));
     //cout << "has a cycle?" << if_has_cycle(nodes) << endl;
+    //find_k_rev_node(nodes, 8);
+    //find_public_charnode(nodes, nodes2);
+
 
 
 
