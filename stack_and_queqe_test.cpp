@@ -1,4 +1,5 @@
 #include "node_list.cpp"
+#include "stack.cpp"
 
 //使用栈来判断链表中的数据是否中心对称,前一半元素依次进栈,和后一半元素一一比较
 int if_symmetric(LinkList L, int n) {
@@ -60,22 +61,67 @@ elemtp pop(int i, stk& s) {
     }
     switch (i) {
     case 0:
-    if (s.top[0] == -1) {
-        cout << "栈空\n";
-        return -1;
-    }
-    else
-        return s.stack[s.top[0]--];
-    break;
+        if (s.top[0] == -1) {
+            cout << "栈空\n";
+            return -1;
+        }
+        else
+            return s.stack[s.top[0]--];
+        break;
     case 1:
-    if (s.top[1] == maxsize) {
-        cout << "栈空\n";
-        return -1;
-    }
-    else
-        return s.stack[s.top[1]++];
-    break;
+        if (s.top[1] == maxsize) {
+            cout << "栈空\n";
+            return -1;
+        }
+        else
+            return s.stack[s.top[1]++];
+        break;
     }//switch
+}
+
+
+
+//用两个栈模拟队列
+int EnQueue(SqStack& S1, SqStack& S2, int e) {
+    if (!StackOverflow(S1)) {
+        Push(S1, e);
+        return 1;
+    }
+    if (StackOverflow(S1) && !StackEmpty(S2)) {
+        printf("队列满");
+        return 0;
+    }
+    if (StackOverflow(S1) && StackEmpty(S2)) {
+        while (!StackEmpty(S1)) {
+            Pop(S1, e);
+            Push(S2, e);
+        }
+    }
+    Push(S1, e);
+    return 1;
+}
+
+void DeQueue(SqStack& S1, SqStack& S2, int& x) {
+    if (!StackEmpty(S2)) {
+        Pop(S2, x);
+    }
+    else if (StackEmpty(S1)) {
+        printf("队列为空");
+    }
+    else {
+        while (!StackEmpty(S1)) {
+            Pop(S1, x);
+            Push(S2, x);
+        }
+        Pop(S2, x);
+    }
+}
+
+int is_QueueEmpty(SqStack S1, SqStack S2) {
+    if (StackEmpty(S1) && StackEmpty(S2))
+        return 1;
+    else
+        return 0;
 }
 
 int main() {

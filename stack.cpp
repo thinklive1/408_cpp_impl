@@ -20,6 +20,10 @@ bool StackEmpty(SqStack S) {
         return false;
 }
 
+bool StackOverflow(SqStack& S) {
+    return S.top < MaxSize;
+}
+
 bool Push(SqStack& S, int& x) {
     if (S.top == MaxSize) return false;
     S.data[++S.top] = x;
