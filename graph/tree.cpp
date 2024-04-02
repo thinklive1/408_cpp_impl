@@ -38,8 +38,6 @@ int find_public_parent(Arraytree T, int i, int j) {
     }
     if (i == j && i > 0) return T.data[i];
     return -1;
-
-
 }
 
 int main() {
