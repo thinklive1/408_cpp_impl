@@ -4,7 +4,7 @@ using namespace std;
 
 void get_next(string T, int next[]) {
     int i = 1, j = 0;
-    next[1] = 0;
+    next[1] = 0;//为方便运算将next整体+1
     while (i < T.length()) {
         if (j == 0 || T.at(i) == T.at(j)) {
             ++i; ++j;
@@ -18,7 +18,7 @@ void get_next(string T, int next[]) {
 int Index_KMP(string S, string T, int next[]) {
     int i = 1, j = 1;
     while (i <= S.length() && j <= T.length()) {
-        if (j -= 0 || S.at(i) == T.at(j)) {
+        if (j == 0 || S.at(i) == T.at(j)) {
             ++i; ++j; //继续比较后继字符
         }
         else
