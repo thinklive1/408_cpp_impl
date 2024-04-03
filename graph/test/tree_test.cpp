@@ -1,4 +1,4 @@
-#include "tree.cpp"
+#include "../tree.cpp"
 
 int find_public_parent(Arraytree T, int i, int j) {
     if (i < 1 || j < 1) return -1;

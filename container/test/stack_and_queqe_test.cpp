@@ -1,5 +1,5 @@
-#include "node_list.cpp"
-#include "stack.cpp"
+#include "../node_list.cpp"
+#include "../stack.cpp"
 
 //使用栈来判断链表中的数据是否中心对称,前一半元素依次进栈,和后一半元素一一比较
 int if_symmetric(LinkList L, int n) {
@@ -61,21 +61,21 @@ elemtp pop(int i, stk& s) {
     }
     switch (i) {
     case 0:
-        if (s.top[0] == -1) {
-            cout << "栈空\n";
-            return -1;
-        }
-        else
-            return s.stack[s.top[0]--];
-        break;
+    if (s.top[0] == -1) {
+        cout << "栈空\n";
+        return -1;
+    }
+    else
+        return s.stack[s.top[0]--];
+    break;
     case 1:
-        if (s.top[1] == maxsize) {
-            cout << "栈空\n";
-            return -1;
-        }
-        else
-            return s.stack[s.top[1]++];
-        break;
+    if (s.top[1] == maxsize) {
+        cout << "栈空\n";
+        return -1;
+    }
+    else
+        return s.stack[s.top[1]++];
+    break;
     }//switch
 }
 
