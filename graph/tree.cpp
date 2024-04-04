@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+#include <stack>
 using namespace std;
 #define MaxSize 64
 
@@ -31,7 +32,7 @@ int parent(int i) {
 }
 
 void visit(TreeNode* node) {
-    cout << node->data;
+    cout << node->data << endl;
 }
 
 void levelOrder(TreeNode* root) {
@@ -80,7 +81,49 @@ void postOrder(TreeNode* root) {
     visit(root);
 }
 
-/*非递归实现暂略
+/*非递归实现
 思路是通过堆栈不断将优先级高的节点入栈
 入栈到尽头时出栈
 */
+
+//中序遍历的非递归算法
+void InOrder2(TreeNode* T) {
+    stack<TreeNode*> S;
+    TreeNode* p = T;
+    while (p || !S.empty()) {
+        if (p) {
+            S.push(p);
+            p = p->left;
+        }
+        else {
+            p = S.top(); S.pop();
+            visit(p);
+            p = p->right;
+        }
+
+    }
+}
+
+//先序遍历的非递归算法
+void PreOrder2(TreeNode* T) {
+    stack<TreeNode*> S;
+    TreeNode* p = T;
+    while (p || !S.empty()) {
+        if (p) {
+            visit(p);
+            S.push(p);
+            p = p->left;
+        }
+        else {
+            p = S.top(); S.pop();
+            p = p->right;
+        }
+    }
+}
+
+LinkTree build_tree_from_array(LinkTree T, int values[], int size, int start = 1) {
+    T->data = values[start];
+    T->left = (left(start) < size) ? build_tree_from_array(new TreeNode, values, size, left((start))) : NULL;
+    T->right = (right(start) < size) ? build_tree_from_array(new TreeNode, values, size, right((start))) : NULL;
+    return T;
+}
