@@ -17,6 +17,7 @@ void visit(ThreadNode* node) {
 }
 
 //使用中序遍历线索化二叉树
+//先序线索化中当ltag==0时才能对左子树先序列线索化,否则可能形成环
 void InThread(ThreadTree& p, ThreadTree& pre) {
     if (p != NULL) {
         InThread(p->lchild, pre); //递归，线索化左子树
@@ -38,7 +39,7 @@ void CreatelnThread(ThreadTree T) {
     ThreadTree pre = NULL;
     if (T != NULL) {
         InThread(T, pre);
-        pre->rchild = NULL;
+        pre->rchild = NULL;//中序遍历的最后一个结点右孩子指针必为空,不需要判空
         pre->rtag = 1;
     }
 }
@@ -52,11 +53,67 @@ ThreadNode* Firstnode(ThreadNode* p) {
 //求中序线索二叉树中结点p在中序序列下的后继
 ThreadNode* Nextnode(ThreadNode* p) {
     if (p->rtag == 0) return Firstnode(p->rchild);
-    else return p->rchild; //rtag=-l 直接返回后继线索
+    else return p->rchild; //rtag==1 直接返回后继线索
 }
 
 //不含头结点的中序线索二叉树的中序遍历
 void Inorder(ThreadNode* T) {
     for (ThreadNode* p = Firstnode(T);p != NULL; p = Nextnode(p))
         visit(p);
+}
+
+
+//先序线索化
+void PreThread(ThreadTree p, ThreadTree& pre) {
+    if (p != NULL) {
+        if (p->lchild == NULL) {//左子树
+            p->lchild = pre;
+            p->ltag = 1;
+        }
+        if (pre != NULL && pre->rchild == NULL) {
+            pre->rchild = p;        //建立前
+            pre->rtag = 1;
+        }
+        pre = p;               //标记当
+        if (p->ltag == 0)
+            PreThread(p->lchild, pre);
+        PreThread(p->rchild, pre);
+    }//if（p!=NULL）
+}
+
+//先序线索化二叉树T
+void CreatePreThread(ThreadTree T) {
+    ThreadTree pre = NULL;
+    if (T != NULL) {//非空二叉树，线索化
+        PreThread(T, pre);//线索化二叉树
+        if (pre->rchild == NULL)//处理遍历的最后一个结点
+            pre->rtag = 1;
+    }
+}
+
+//后序线索化
+void PostThread(ThreadTree p, ThreadTree& pre) {
+    if (p != NULL) {
+        PostThread(p->lchild, pre);
+        PostThread(p->rchild, pre);
+        if (p->lchild == NULL) {
+            p->lchild = pre;
+            p->ltag = 1;
+        }
+        if (pre != NULL && pre->rchild == NULL) {
+            pre->rchild = p;
+            pre->rtag = 1;
+        }
+        pre = p;
+    }//if(p!=NULL)
+}
+
+//后序线索化二叉树T
+void CreatePostThread(ThreadTree T) {
+    ThreadTree pre = NULL;
+    if (T != NULL) {//非空二叉树，线索化
+        PostThread(T, pre);//线索化二叉树
+        if (pre->rchild == NULL)//处理遍历的最后一个结点
+            pre->rtag = 1;
+    }
 }
