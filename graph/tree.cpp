@@ -7,7 +7,7 @@ using namespace std;
 struct TreeNode {
     int data; //数据域
     struct TreeNode* left, * right; //左、右孩子指针
-    TreeNode() { left = nullptr; right = nullptr; }
+    TreeNode() : data(0), left(nullptr), right(nullptr) {}
 };
 using LinkTree = TreeNode*;
 
@@ -32,9 +32,10 @@ int parent(int i) {
 }
 
 void visit(TreeNode* node) {
-    cout << node->data << endl;
+    cout << node->data << '\n';
 }
 
+//层次遍历
 void levelOrder(TreeNode* root) {
     // 初始化队列，加入根节点
     queue<TreeNode*> queue;
@@ -122,6 +123,15 @@ void PreOrder2(TreeNode* T) {
 }
 
 //后序遍历的非递归算法
+/*
+难点在于，首先要把所有左孩子入栈
+直到第一个没有左孩子的结点入栈，但此时不能访问
+必须确保先把该节点的右孩子(如果存在，且没有访问过)也访问了，再访问该节点
+那么，visit有几种情况呢？
+1. 叶节点，此时可以放心访问
+2. 有右孩子，但右孩子访问过，此时也可以访问
+只要确保只在这两种情况下visit，就是安全的后序遍历
+*/
 void postOrder2(LinkTree T) {
     LinkTree pre = nullptr;
     stack<TreeNode*> st;
@@ -129,10 +139,10 @@ void postOrder2(LinkTree T) {
         if (T) {
             st.push(T);
             T = T->left;
-        }
+        }//一路遍历到没有左孩子，此时可能有右孩子
         else {
             T = st.top();//读节点但不弹出
-            if (T->right && T->right != pre) T = T->right;
+            if (T->right && T->right != pre) T = T->right;//如果有右孩子，且没有访问过，右孩子入栈
             else {
                 T = st.top();
                 st.pop();
