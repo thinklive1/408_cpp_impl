@@ -174,3 +174,11 @@ void build_tree_helper(LinkTree& T) {
     build_tree_helper(T->left);
     build_tree_helper(T->right);
 }
+
+//交换给定节点的左右子树
+LinkTree& exchange_lr(LinkTree& T) {
+    LinkTree temp = T->left;
+    T->left = T->right;
+    T->right = temp;
+    return T;
+}

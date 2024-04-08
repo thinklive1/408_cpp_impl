@@ -31,19 +31,25 @@ void rev_levelOrder(LinkTree T) {//相当于层次遍历的相反顺序，即用
     }
 }
 
-//递归求二叉树高度
+//2.递归求二叉树高度
 int height(LinkTree T) {
-    if (!T) return 0;
+    if (T == nullptr) return 0;
     return max(height(T->left), height(T->right)) + 1;//优雅的两行实现，但不是尾递归？
 }
 
-//非递归算法求二叉树的高度
+//3.非递归算法求二叉树的高度
 int height2(LinkTree T) {
     int height = 0;
     return height;
-
 }
 
+//4.先序遍历序列和中序遍历序列分别存于两个一维数组,构建二叉树
+
+//5.判别给定二叉树是否是完全二叉树
+
+//6.求给定二叉树的所有双分支结点个数
+
+//7.交换所有结点的左右子树
 
 int main() {
     int temp[8] = { 0, 12, 23, 33,54, 72, 88, 99 };
@@ -52,8 +58,8 @@ int main() {
     t = build_tree_from_array(t, temp, 8, 1);
     build_tree_helper(t);
 
-    cout << height(t) << '\n';
+    //cout << height(t) << '\n';
     //rev_levelOrder(t);
     //postOrder2(t);
-    //levelOrder(t);
+    levelOrder(t);
 }
