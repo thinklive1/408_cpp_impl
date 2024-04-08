@@ -33,7 +33,7 @@ void rev_levelOrder(LinkTree T) {//相当于层次遍历的相反顺序，即用
 
 //递归求二叉树高度
 int height(LinkTree T) {
-    if (T == nullptr) return 0;
+    if (!T) return 0;
     return max(height(T->left), height(T->right)) + 1;//优雅的两行实现，但不是尾递归？
 }
 
