@@ -7,7 +7,7 @@ using namespace std;
 struct TreeNode {
     int data; //数据域
     struct TreeNode* left, * right; //左、右孩子指针
-    TreeNode() { left = NULL; right = NULL; }
+    TreeNode() { left = nullptr; right = nullptr; }
 };
 using LinkTree = TreeNode*;
 
@@ -121,9 +121,23 @@ void PreOrder2(TreeNode* T) {
     }
 }
 
+//从数组构建链式树，如果值是INT_MIN则视为nullptr
 LinkTree build_tree_from_array(LinkTree T, int values[], int size, int start = 1) {
     T->data = values[start];
-    T->left = (left(start) < size) ? build_tree_from_array(new TreeNode, values, size, left((start))) : NULL;
-    T->right = (right(start) < size) ? build_tree_from_array(new TreeNode, values, size, right((start))) : NULL;
+    T->left = (left(start) < size) ? build_tree_from_array(new TreeNode, values, size, left((start))) : nullptr;
+    T->right = (right(start) < size) ? build_tree_from_array(new TreeNode, values, size, right((start))) : nullptr;
     return T;
+}
+
+//将值是int_min的节点设为空，并回收内存
+void build_tree_helper(LinkTree& T) {
+    if (T == nullptr) return;
+    if (T->data == INT16_MIN) {
+        LinkTree temp = T;
+        T = nullptr;
+        return;
+        delete temp;
+    }
+    build_tree_helper(T->left);
+    build_tree_helper(T->right);
 }
