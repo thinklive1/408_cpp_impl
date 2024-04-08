@@ -121,6 +121,29 @@ void PreOrder2(TreeNode* T) {
     }
 }
 
+//后序遍历的非递归算法
+void postOrder2(LinkTree T) {
+    LinkTree pre = nullptr;
+    stack<TreeNode*> st;
+    while (T || !st.empty()) {
+        if (T) {
+            st.push(T);
+            T = T->left;
+        }
+        else {
+            T = st.top();//读节点但不弹出
+            if (T->right && T->right != pre) T = T->right;
+            else {
+                T = st.top();
+                st.pop();
+                visit(T);
+                pre = T;
+                T = nullptr;
+            }
+        }
+    }
+}
+
 //从数组构建链式树，如果值是INT_MIN则视为nullptr
 LinkTree build_tree_from_array(LinkTree T, int values[], int size, int start = 1) {
     T->data = values[start];
