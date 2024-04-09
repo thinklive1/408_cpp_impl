@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 using namespace std;
 #define ElemType int
 
@@ -15,7 +14,7 @@ void Insertsort(ElemType A[], int n) {
         }
 }
 
-void InsertSort(ElemType A[], int n) {
+void InsertSort_byhalf(ElemType A[], int n) {
     int i, j, low, high, mid; //依次将A[2]~A[n]插入前面的巳排序序列
     for (i = 2; i <= n; i++) { //将A[i]暂存到A[0]
         A[0] = A[i];
