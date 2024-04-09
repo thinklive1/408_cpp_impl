@@ -1,4 +1,4 @@
-#include "../arr.cpp"
+#include "../Sequence_list.cpp"
 
 void reverseql(sqList& L) {//逆转线性表
     for (int i = 0;i < L.length / 2;i++) {

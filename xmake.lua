@@ -1,10 +1,10 @@
 target("arr")
     set_kind("binary")
-    add_files("./container/test/arr_test.cpp")
+    add_files("./container/test/seq_list_test.cpp")
 
 target("node")
     set_kind("binary")
-    add_files("./container/test/node_test.cpp")
+    add_files("./container/test/linked_list_test.cpp")
 
 target("stack")
     set_kind("binary")

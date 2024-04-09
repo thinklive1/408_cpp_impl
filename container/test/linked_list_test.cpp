@@ -1,4 +1,4 @@
-#include "../node_list.cpp"
+#include "../Linked_list.cpp"
 
 // 1.递归删除不带头结点链表值为x的节点
 void del_by_val(LinkList& L, const int& x) {

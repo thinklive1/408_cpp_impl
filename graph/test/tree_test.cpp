@@ -1,4 +1,4 @@
-#include "../tree.cpp"
+#include "../Tree.cpp"
 #include <stack>
 //0.找到顺序存储二叉树的公共父节点
 int find_public_parent(Arraytree T, int i, int j) {

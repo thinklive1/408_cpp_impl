@@ -1,5 +1,5 @@
-#include "../node_list.cpp"
-#include "../stack.cpp"
+#include "../Linked_list.cpp"
+#include "../Stack.cpp"
 
 //使用栈来判断链表中的数据是否中心对称,前一半元素依次进栈,和后一半元素一一比较
 int if_symmetric(LinkList L, int n) {
