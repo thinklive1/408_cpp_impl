@@ -13,3 +13,7 @@ target("stack")
 target("tree")
     set_kind("binary")
     add_files("./graph/test/tree_test.cpp")
+    
+target("sort")
+    set_kind("binary")
+    add_files("./sort/*.cpp")

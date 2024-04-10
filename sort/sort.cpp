@@ -3,15 +3,16 @@ using namespace std;
 #define ElemType int
 
 /* 插入排序 */
-void Insertsort(ElemType A[], int n) {
+int* Insertsort(ElemType A[], int n) {
     int i, j;
-    for (i = 2; i <= n; i++) //依次将A[2] ~A[n]插入前面己排序序列
+    for (i = 2; i < n; i++) //依次将A[2] ~A[n]插入前面己排序序列
         if (A[i] < A[i - 1]) { //若A[i]关键码小于其前驱，将A[i]插入有序表
-            A[0] = A[i]; //复制为哨兵，A【0]不存放元素
+            A[0] = A[i]; //复制为哨兵，A[0]不存放元素
             for (j = i - 1;A[0] < A[j];--j)//从后往前查找待插入位置
                 A[j + 1] = A[j]; //向后挪位
             A[j + 1] = A[0]; //复制到插入位置
         }
+    return A;
 }
 
 void InsertSort_byhalf(ElemType A[], int n) {
@@ -31,11 +32,11 @@ void InsertSort_byhalf(ElemType A[], int n) {
 }
 
 void ShellSort(ElemType A[], int n) {
-    //A[0]]是暂存单元，不是哨兵，当j<=0时，插入位置已到
+    //A[0]是暂存单元，不是哨兵，当j<=0时，插入位置已到
     int dk, i, j;
     for (dk = n / 2; dk >= 1; dk = dk / 2) //增量变化(无统一规定)
         for (i = dk + 1;i <= n;++i)
-            if (A[i] < A[i - dk]) { //需将A [i ]插入有序增量子表
+            if (A[i] < A[i - dk]) { //需将A [i]插入有序增量子表
                 A[0] = A[i]; //暂存在 A[0]
                 for (j = i - dk;j > 0 && A[0] < A[j];j -= dk)
                     A[j + dk] = A[j]; //记录后移，查找插入的位置
@@ -55,16 +56,6 @@ void BubbleSort(ElemType A[], int n) {
             return; //本趟遍历后没有发生交换，说明表已经有序
     }
 }
-
-void Quicksort(ElemType A[], int low, int high) {
-    if (low < high) { //递归跳出的条件
-        //Partition ()就是划分操作，将表A [low…high]划分为满足上述条件的两个子表
-        int pivotpos = Partition(A, low, high); //划分
-        Quicksort(A, low, pivotpos - 1); //依次对两个子表进行递归排序
-        Quicksort(A, pivotpos + 1, high);
-    }
-}
-
 int Partition(ElemType A[], int low, int high) { //一趟划分
     ElemType pivot = A[low]; //将当前表中第一个元素设为枢轴，对表进行划分
     while (low < high) { //循环跳出条件
@@ -77,6 +68,15 @@ int Partition(ElemType A[], int low, int high) { //一趟划分
     return low; //返回存放枢轴的最终位置
 }
 
+void Quicksort(ElemType A[], int low, int high) {
+    if (low < high) { //递归跳出的条件
+        //Partition ()就是划分操作，将表A [low…high]划分为满足上述条件的两个子表
+        int pivotpos = Partition(A, low, high); //划分
+        Quicksort(A, low, pivotpos - 1); //依次对两个子表进行递归排序
+        Quicksort(A, pivotpos + 1, high);
+    }
+}
+
 void SelectSort(ElemType A[], int n) {
     for (int i = 0; i < n - 1; i++) { //一共进行 n-1 趟
         int min = i; //记录最小元素位置
@@ -84,4 +84,17 @@ void SelectSort(ElemType A[], int n) {
             if (A[j] < A[min]) min = j; //更新最小元素位置
         if (min != i) swap(A[i], A[min]); //swap()函数共移动元素 3 次
     }
+}
+
+void print_arr(int A[], int n) {
+    for (int i = 0;i < n;i++)
+        cout << i << ":" << A[i] << '\n';
+}
+
+int main() {
+    int temp[8] = { 1,24,12,35,4,13,72,54 };
+    print_arr(temp, 8);
+    cout << "after sort:\n";
+    print_arr(Insertsort(temp, 8), 8);
+
 }
