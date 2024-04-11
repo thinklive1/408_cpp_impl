@@ -38,8 +38,22 @@ int height(LinkTree T) {
 }
 
 //3.非递归算法求二叉树的高度
-int height2(LinkTree T) {
+int height2(LinkTree T) {//层序遍历中存储每层最右侧指针，每次出队元素和最右侧指针相同时，高度++
+    if (T == nullptr) return 0;
     int height = 0;
+    TreeNode* last = T;
+    queue<LinkTree> qe;
+    qe.push(T);
+    while (!qe.empty()) {
+        LinkTree node = qe.front();
+        qe.pop();
+        if (node->left != nullptr) qe.push(node->left);
+        if (node->right != nullptr) qe.push(node->right);
+        if (node == last) {
+            height++;
+            last = qe.back();
+        }
+    }
     return height;
 }
 
@@ -58,6 +72,7 @@ int main() {
     t = build_tree_from_array(t, temp, 8, 1);
     build_tree_helper(t);
 
+    cout << height2(t) << '\n';
     //cout << height(t) << '\n';
     //rev_levelOrder(t);
     //postOrder2(t);
