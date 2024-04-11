@@ -16,7 +16,7 @@ struct Vertex { //顶点表结点
     ArcNode* first; //指向第一条依附该项点的弧的指针
 };
 
-void printVector(vector < Vertex*> vec) {
+void printVector(vector <Vertex*> vec) {
     int k = 0;
     for (auto i : vec) cout << k++ << ':' << i->data << '\n';
 }

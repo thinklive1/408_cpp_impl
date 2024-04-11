@@ -221,7 +221,7 @@ pair<LinkList, LinkList> tear_list_rev(LinkList L) {
 
 //12.递增有序的线性表去除重复元素
 void remove_samepart_list(LinkList L) {
-    LinkList prev = L->next, q = prev->next;
+    LinkList prev = L->next, q;
     while (prev->next != NULL) {
         q = prev->next;
         if (prev->data == q->data) {

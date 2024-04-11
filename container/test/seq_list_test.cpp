@@ -58,8 +58,7 @@ void delete_orderedql_by_range(sqList L, int i, int j) {//删除一定范围的�
 }
 
 void delete_ql_by_range(sqList L, int s, int t) {//删除一定范围的元素
-
-    int value_in_range;
+    int value_in_range = 0;
     for (int i = 0;i < L.length;i++) {
         if (s <= L.data[i] && L.data[i] <= t) {
             value_in_range++;
@@ -117,7 +116,7 @@ sqList exchange(sqList L, int m, int n) {//位置互换
 }
 
 int middle_find_x(const sqList& L, int x) {//二分查找x
-    int index = L.length / 2;int lft = 0;int rht = L.length - 1;
+    int index;int lft = 0;int rht = L.length - 1;
     while (lft <= rht) {
         index = (rht + lft) / 2;
         if (L.data[index] == x) return index;
@@ -151,7 +150,7 @@ void left_move(sqList L, int p) {//左移p位
 
 int find_middle_2(sqList L1, sqList L2) {
     int index = 0;
-    int middle;
+    int middle = 0;
     int lft = 0;int rht = 0;
     while (index < (L1.length + L2.length + 1) / 2) {
         if (L1.data[lft] <= L2.data[rht]) {

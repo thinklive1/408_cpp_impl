@@ -12,7 +12,7 @@ int if_symmetric(LinkList L, int n) {
     }
     if (n % 2 == 1) p = p->next;
     while (p != NULL && s[i] == p->data) {
-        i--; //.i充当栈顶指针
+        i--; //i充当栈顶指针
         p = p->next;
     }
     if (i == -1)
@@ -49,6 +49,7 @@ int push(int i, elemtp x, stk& s) {
     case 0: s.stack[++s.top[0]] = x; return 1; break;
     case 1: s.stack[--s.top[1]] = x; return 1;
     }
+    return 0;
 }
 
 
@@ -77,6 +78,7 @@ elemtp pop(int i, stk& s) {
         return s.stack[s.top[1]++];
     break;
     }//switch
+    return -1;
 }
 
 

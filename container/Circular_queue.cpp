@@ -24,6 +24,6 @@ bool EnQueue(SqQueue& Q, int x) {
 bool DeQueue(SqQueue& Q, int& x) {
     if (Q.rear == Q.front) return false; //队空则报错
     x = Q.data[Q.front];
-    Q.front == (Q.front + 1) % MaxSize; //队头指针加 1 取模
+    Q.front = (Q.front + 1) % MaxSize; //队头指针加 1 取模
     return true;
 }

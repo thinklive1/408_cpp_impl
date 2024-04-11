@@ -168,8 +168,8 @@ void build_tree_helper(LinkTree& T) {
     if (T->data == INT16_MIN) {
         LinkTree temp = T;
         T = nullptr;
-        return;
         delete temp;
+        return;
     }
     build_tree_helper(T->left);
     build_tree_helper(T->right);

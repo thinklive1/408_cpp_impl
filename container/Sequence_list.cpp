@@ -33,6 +33,7 @@ int LocateElem(sqList L, int e) {
     }
     return 0; //退出循环,说明查找失败
 }
+
 bool ListDelete(sqList& L, int i, int e) {
     if (i<1 || i>L.length) {//判断i的范围是否有效
         return false;
@@ -42,9 +43,11 @@ bool ListDelete(sqList& L, int i, int e) {
         //将第i个位置后的元素前移
         L.data[j - 1] = L.data[j];
     }
+    cout << "del val:" << e << '\n';
     L.length--;//线性表长度减1
     return true;
 }
+
 void deletemin(sqList L) {//从顺序表中删除具有最小值的元素(假设唯一)并由函数返回被删元素的值。空出的位置由最后一个元素填上
     int min = L.data[0];
     int min_index = 0;
