@@ -6,6 +6,7 @@ using namespace std;
 
 using VertexType = char;
 using EdgeType = int;
+
 struct Matrix_Graph {
     VertexType Vex[MaxVertexNum];
     EdgeType Edge[MaxVertexNum][MaxVertexNum]; //邻接矩阵，边表
@@ -29,3 +30,33 @@ struct ALGraph {
     int vexnum, arcnum; //图的顶点数和弧数
 };
 
+ALGraph build_graph(int V[], pair<int, int> edges[], int V_size, int e_size) {
+    ALGraph G;
+    G.vexnum = V_size;G.arcnum = e_size;
+    for (int i = 0;i < G.vexnum;i++) {
+        VNode v;
+        v.data = V[i];
+        v.first = nullptr;
+        G.vertices[i] = v;
+    }
+    for (int i = 0;i < G.arcnum;i++) {
+        auto e = edges[i];
+        ArcNode* arc = new ArcNode;
+        arc->adjvex = e.second;
+        arc->next = nullptr;
+        auto temp = G.vertices[e.first].first;
+        G.vertices[e.first].first = arc;
+        G.vertices[e.first].first->next = temp;
+    }
+    return G;
+}
+
+void print_graph(ALGraph G) {
+    for (int i = 0;i < G.vexnum;i++) {
+        auto p = G.vertices[i].first;
+        while (p) {
+            cout << i << "->" << p->adjvex << '\n';
+            p = p->next;
+        }
+    }
+}
