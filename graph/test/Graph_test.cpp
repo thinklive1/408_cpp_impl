@@ -33,15 +33,56 @@ int* Convert(ALGraph& G, int V, int arcs[]) {
     return arcs;
 }
 
+//2.判断无向图是否是树,逻辑是深度遍历中有2(v-1)条边的连通图肯定是树
+//其实我也不知道严格来说要求是遍历中涉及边数还是图的总边数可满足要求，保险起见使用前者
+//因此需要一个统计边数的dfs算法
+void dfs2(ALGraph& graph, set<VNode*>& visited, vector<VNode*>& res, VNode* vet, int& e_num);
+bool is_tree(ALGraph& G) {
+    set<VNode*> visited;
+    vector<VNode*> res;
+    int e_size = 0;
+    dfs2(G, visited, res, &G.vertices[0], e_size);
+    //理论上讲无向图判断的边数应该*2，这里涉及图的实现就不乘了，这样不严谨，但实在不想有向无向图各自写一遍了
+    if ((G.vexnum - 1) == e_size && visited.size() == G.vexnum) return true;
+    return false;
+}
+
+void dfs2(ALGraph& graph, set<VNode*>& visited, vector<VNode*>& res, VNode* vet, int& e_num) {
+    res.push_back(vet);   // 记录访问顶点
+    visited.emplace(vet); // 标记该顶点已被访问
+    // 遍历该顶点的所有邻接顶点
+    auto adjVet = vet->first;
+    vector<VNode*> temp = {};
+    while (adjVet) {
+        ++e_num;//统计遍历涉及的边数
+        temp.push_back(adjVet->adjvex);
+        adjVet = adjVet->next;
+    }
+    for (auto V : temp) {
+        if (visited.count(V))
+            continue; // 跳过已被访问的顶点
+        dfs2(graph, visited, res, V, e_num); // 递归访问邻接顶点
+    }
+}
+
+void print_bool(bool bit) {
+    if (bit == 1) cout << "true\n";
+    else cout << "false\n";
+}
+
 int main() {
     int V[5] = { 0,1,2,3,4 };
     pair<int, int> edges[6] = { {1,2},{1,3},{2,4},{4,3},{3,2},{4,2} };
+    pair<int, int> tree_edges[4] = { {1,2},{1,3},{2,4},{0,1} };
     ALGraph g = build_graph(V, edges, 5, 6);
-    print_graph(g);
-    int matrix[25];
-    Convert(g, 5, matrix);
-    //for (auto i : graphBFS(g, &g.vertices[1])) cout << i->no;
-    //for (auto i : graphDFS(g, &g.vertices[2])) cout << i->no;
+    ALGraph tree = build_graph(V, tree_edges, 5, 4);
+    //print_graph(g);
+    print_graph(tree);
+    /*     int matrix[25];
+        Convert(g, 5, matrix); */
+        //for (auto i : graphBFS(g, &g.vertices[1])) cout << i->no;
+        //for (auto i : graphDFS(g, &g.vertices[2])) cout << i->no;
+    print_bool(is_tree(tree));
 
 
 
