@@ -85,7 +85,7 @@ void make_unique(sqList L) {//删除相同值的元素
 }
 
 sqList mergesq(sqList L1, sqList L2) {//融合两个有序表
-    sqList result = *new sqList();
+    sqList result;
     int i = 0, j = 0, k = 0;
     while (i < L1.length && j < L2.length) {
         if (L1.data[i] < L2.data[j]) result.data[k++] = L1.data[i++];

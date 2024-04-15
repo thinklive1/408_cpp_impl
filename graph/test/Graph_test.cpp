@@ -8,8 +8,15 @@ struct MGraph {
     int Edge[MAXV][MAXV];
 };
 
-int IsExistEL(MGraph G) {
-    return 0;
+//0.当无向图G中度为奇数的顶点个数为不大于2的偶数时，G存在包含所有边且长度为E的路径,称为EL路径，判断是否存在
+int IsExistEL(MGraph G) {//因为是无向图，只需要遍历每行的度数，并计算奇数度数节点数量即可
+    int degree = 0, count = 0;
+    for (int i = 0;i < G.numVertices;i++) {
+        degree = 0;
+        for (int j = 0;j < G.numVertices;j++) if (G.Edge[i][j] == 1) ++degree;
+        if (degree % 2 == 1) ++count;
+    }
+    return (count == 0 || count == 2) ? 1 : 0;
 }
 
 //1.将邻接表方式表示的图G转换为邻接矩阵arcs,V是图的顶点数

@@ -46,7 +46,7 @@ LinkList remove_head(LinkList head) {
 
 // 4.在带头结点的单链表L中删除一个最小值结点(假设唯一)
 void del_min_withhead(LinkList L) {
-    if (L->next == NULL) return;
+    if (L == NULL || L->next == NULL) return;
     LinkList prev = L;
     L = L->next;
     LinkList min_node, min_prev;
