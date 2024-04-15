@@ -94,28 +94,68 @@ bool if_complete(LinkTree T) {
     return true;
 }
 
-
 //6.求给定二叉树的所有双分支结点个数
+int num_of_twinnode(LinkTree& T) {//优雅的递归
+    if (T == nullptr) return 0;
+    if (T->left && T->right) return 1 + num_of_twinnode(T->left) + num_of_twinnode(T->right);
+    else return num_of_twinnode(T->left) + num_of_twinnode(T->right);
+}
 
 //7.交换所有结点的左右子树
+void swap_lr(LinkTree& T) {
+    if (T) {
+        swap_lr(T->left);
+        swap_lr(T->right);
+        LinkTree L = T->left;
+        T->left = T->right;
+        T->right = L;
+    }
+}
 
 //8.求先序遍历序列中第k个节点的值
+int preOrder_kth_node(LinkTree T, int& i, int& k) {
+    if (k <= 0) return INT32_MIN;//输入不合理，直接退出
+    if (k == i) return T->data;//由于每次递归i只+1,因此达到k时必然立刻返回
+    int val;
+    if (T->left) val = preOrder_kth_node(T->left, ++i, k);//存储对左子树遍历后的值
+    if (i == k) return val;//如果遍历完左子树，且i==k,那么返回值必然是ith节点的data
+    else if (T->right) return preOrder_kth_node(T->right, ++i, k);//如果右孩子不空，才可以++i
+    else return INT16_MIN;
+}
 
 //9.对于树中每个元素值为x的结点，删除以x为根的子树，并释放相应的空间
+void del_val_x_node(LinkTree T, int& x) {
+
+}
 
 //10.打印值为x的结点的所有祖先，假设值为x的结点不多于一个
+void print_ancestor_of_xval(LinkTree T, int& x) {
+
+}
+
+//11.p和q分别为指向该二叉树中任意两个结点的指针,寻找其最近公共祖先
+LinkTree find_ancestor_root(LinkTree root, LinkTree p, LinkTree q) {
+    return root;
+}
+
+//12.求非空二叉树的宽度（结点数最多的一层的结点个数）
 
 int main() {
-    int temp[8] = { 0, 12, 23, 33,54, 72, 88, INT16_MIN };
+    int temp[8] = { 0, 12, 23, 33,54, 72, 88, 99 };
     int temp2[3] = { 3,17, 23 };
     LinkTree t = new TreeNode;
     t = build_tree_from_array(t, temp, 8, 1);
     build_tree_helper(t);
 
-    //cout << if_complete(t) << '\n';
-    //cout << height2(t) << '\n';
-    //cout << height(t) << '\n';
-    //rev_levelOrder(t);
-    //postOrder2(t);
-    levelOrder(t);
+    for (int i = 1;i < 8;i++) {
+        int j = 1;
+        cout << i << "th node: " << preOrder_kth_node(t, j, i) << '\n';
+    }
+    //cout << num_of_twinnode(t);
+//cout << if_complete(t) << '\n';
+//cout << height2(t) << '\n';
+//cout << height(t) << '\n';
+//rev_levelOrder(t);
+//postOrder2(t);
+//levelOrder(t);
 }
