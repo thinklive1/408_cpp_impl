@@ -1,5 +1,7 @@
 #include "../Tree.cpp"
 #include <stack>
+#include "../../container/Linked_list.cpp"
+
 //0.找到顺序存储二叉树的公共父节点
 int find_public_parent(Arraytree T, int i, int j) {
     if (i < 1 || j < 1) return -1;
@@ -124,14 +126,43 @@ int preOrder_kth_node(LinkTree T, int& i, int& k) {
 }
 
 //9.对于树中每个元素值为x的结点，删除以x为根的子树，并释放相应的空间
-void del_val_x_node(LinkTree T, int& x) {
+void del_val_x_node_helper(LinkTree& T, int& x, LinkTree& pre, bool is_lft) {
+    if (!T) return;
+    del_val_x_node_helper(T->left, x, T, 1);
+    del_val_x_node_helper(T->right, x, T, 0);
+    if (T->data == x) {
+        del_node(T);//递归删除T的所有子节点
+        if (is_lft) pre->left = nullptr;
+        else pre->right = nullptr;
+    }
+}
 
+void del_val_x_node(LinkTree& T, int x) {
+    if (T->data == x) del_node(T);
+    else {
+        del_val_x_node_helper(T->left, x, T, 1);
+        del_val_x_node_helper(T->right, x, T, 0);
+    }
 }
 
 //10.打印值为x的结点的所有祖先，假设值为x的结点不多于一个
-void print_ancestor_of_xval(LinkTree T, int& x) {
-
+bool print_ancestor_helper(LinkTree& T, int& x);
+void print_ancestor_of_xval(LinkTree& T, int x) {
+    print_ancestor_helper(T, x);
 }
+
+bool print_ancestor_helper(LinkTree& T, int& x) {
+    //递归返回true表示该节点的子节点中有x节点，因此可以打印，否则不能打印
+    if (!T) return false;
+    if (T->data == x) return true;
+    bool val1 = print_ancestor_helper(T->left, x);
+    if (val1 == 1) cout << T->data << '\n';
+    bool val2 = print_ancestor_helper(T->right, x);
+    if (val2 == 1) cout << T->data << '\n';
+    return val1 || val2;
+}
+//非递归实现用到栈，访问到值为x的结点时，栈中所有元素均为该结点的祖先，依次出栈打印
+
 
 //11.p和q分别为指向该二叉树中任意两个结点的指针,寻找其最近公共祖先
 LinkTree find_ancestor_root(LinkTree root, LinkTree p, LinkTree q) {
@@ -139,18 +170,44 @@ LinkTree find_ancestor_root(LinkTree root, LinkTree p, LinkTree q) {
 }
 
 //12.求非空二叉树的宽度（结点数最多的一层的结点个数）
+int width_of_tree(LinkTree& T) {
+    return 0;
+}
+
+//13.一棵满二叉树(所有结点值均不同),已知其先序序列为pre,求其后序序列post。
+vector<int> find_post_from_pre(LinkTree& T) {
+    vector<int> res;
+    return res;
+}
+
+//14.将二叉树的叶结点按从左到右的顺序连成一个带头结点单链表，表头指针为head，叶结点的右指针域来存放单链表指针
+LinkList Link_tree(LinkTree& T) {
+    LNode* head;
+    return head;
+}
+
+/*15.判断二叉树是否相似，相似的定义：
+T1和T2都是空的二叉树或都只有一个根结点；
+或者T1的左子树和T2的左子树相似，且T1的右子树和T2的右子树相似
+*/
+bool if_tree_similar(LinkTree& T) {
+    return false;
+}
+
 
 int main() {
-    int temp[8] = { 0, 12, 23, 33,54, 72, 88, 99 };
+    int temp[8] = { 0, 8,14, 25,54, 72, 88, 99 };
     int temp2[3] = { 3,17, 23 };
     LinkTree t = new TreeNode;
     t = build_tree_from_array(t, temp, 8, 1);
     build_tree_helper(t);
 
-    for (int i = 1;i < 8;i++) {
+    print_ancestor_of_xval(t, 54);
+    //del_val_x_node(t, 88);
+    /* for (int i = 1;i < 8;i++) {
         int j = 1;
         cout << i << "th node: " << preOrder_kth_node(t, j, i) << '\n';
-    }
+    } */
     //cout << num_of_twinnode(t);
 //cout << if_complete(t) << '\n';
 //cout << height2(t) << '\n';

@@ -182,3 +182,12 @@ LinkTree& exchange_lr(LinkTree& T) {
     T->right = temp;
     return T;
 }
+
+//删除一个结点及其子节点，但不会改变其与父节点关系
+void del_node(LinkTree& T) {
+    if (!T) return;
+    del_node(T->left);
+    del_node(T->right);
+    cout << "del: " << T->data << " pointer is: " << T << '\n';
+    delete T;
+}
