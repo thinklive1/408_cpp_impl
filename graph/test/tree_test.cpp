@@ -165,6 +165,20 @@ bool print_ancestor_helper(LinkTree& T, int& x) {
 
 
 //11.p和q分别为指向该二叉树中任意两个结点的指针,寻找其最近公共祖先
+//使用后序遍历产生的栈，得到p的祖先栈，用于匹配q
+bool is_parent(LinkTree& parent, LinkTree& child) {
+    return parent->left == child || parent->right == child;
+}
+LinkTree ancestor_helper(LinkTree parent, LinkTree& p, LinkTree& q, bool& has_found_p, bool& has_found_q, LinkTree ancestor) {
+    if (has_found_p && has_found_q) return parent;
+    if (parent == nullptr) return;
+    ancestor_helper(parent->left, p, q, has_found_p, has_found_q, ancestor);
+    ancestor_helper(parent->right, p, q, has_found_p, has_found_q, ancestor);
+
+
+
+}
+
 LinkTree find_ancestor_root(LinkTree root, LinkTree p, LinkTree q) {
     return root;
 }
