@@ -165,27 +165,43 @@ bool print_ancestor_helper(LinkTree& T, int& x) {
 
 
 //11.p和q分别为指向该二叉树中任意两个结点的指针,寻找其最近公共祖先
-//使用后序遍历产生的栈，得到p的祖先栈，用于匹配q
-bool is_parent(LinkTree& parent, LinkTree& child) {
-    return parent->left == child || parent->right == child;
-}
-LinkTree ancestor_helper(LinkTree parent, LinkTree& p, LinkTree& q, bool& has_found_p, bool& has_found_q, LinkTree ancestor) {
-    if (has_found_p && has_found_q) return parent;
-    if (parent == nullptr) return;
-    ancestor_helper(parent->left, p, q, has_found_p, has_found_q, ancestor);
-    ancestor_helper(parent->right, p, q, has_found_p, has_found_q, ancestor);
-
-
-
+//祖先有两种可能：1.该节点左右子树各自存在pq 2.节点本身是p或q且其左子树或右子树有另一个孩子节点
+bool ancestor_helper(LinkTree tree, LinkTree& p, LinkTree& q, LinkTree& res) {
+    if (!tree) return false;
+    bool is_lft_son = ancestor_helper(tree->left, p, q, res);
+    bool is_rht_son = ancestor_helper(tree->right, p, q, res);
+    if ((is_lft_son && is_rht_son) || ((tree->data == p->data || tree->data == q->data) && (is_lft_son || is_rht_son))) {
+        res = tree;
+    }
+    return is_lft_son || is_rht_son || (tree->data == p->data || tree->data == q->data);
 }
 
 LinkTree find_ancestor_root(LinkTree root, LinkTree p, LinkTree q) {
-    return root;
+    LinkTree res = nullptr;
+    ancestor_helper(root, p, q, res);
+    return res;
 }
 
 //12.求非空二叉树的宽度（结点数最多的一层的结点个数）
 int width_of_tree(LinkTree& T) {
-    return 0;
+    if (!T) return 0;
+    int max_layer = 1;
+    queue<LinkTree> qe;
+    queue<LinkTree> next_qe;
+    qe.push(T);
+    while (true) {
+        while (!qe.empty()) {
+            LinkTree t = qe.front();
+            qe.pop();
+            if (t->left) next_qe.push(t->left);
+            if (t->right) next_qe.push(t->right);
+        }
+        if (next_qe.empty()) break;
+        max_layer = max(int(next_qe.size()), max_layer);
+        qe = next_qe;
+        while (!next_qe.empty()) next_qe.pop();
+    }
+    return max_layer;
 }
 
 //13.一棵满二叉树(所有结点值均不同),已知其先序序列为pre,求其后序序列post。
@@ -216,7 +232,9 @@ int main() {
     t = build_tree_from_array(t, temp, 8, 1);
     build_tree_helper(t);
 
-    print_ancestor_of_xval(t, 54);
+    cout << width_of_tree(t);
+    //cout << "ancestor is:" << find_ancestor_root(t, t->left->left, t->left->right)->data;
+    //print_ancestor_of_xval(t, 54);
     //del_val_x_node(t, 88);
     /* for (int i = 1;i < 8;i++) {
         int j = 1;
