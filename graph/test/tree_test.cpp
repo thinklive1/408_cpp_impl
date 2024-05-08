@@ -205,14 +205,35 @@ int width_of_tree(LinkTree& T) {
 }
 
 //13.一棵满二叉树(所有结点值均不同),已知其先序序列为pre,求其后序序列post。
-vector<int> find_post_from_pre(LinkTree& T) {
-    vector<int> res;
-    return res;
+void find_post_from_pre(int pre[], int l1, int h1, int post[], int l2, int h2) {
+    int half;
+    if (h1 >= l1) {
+        post[h2] = pre[11];
+        half = (h1 - l1) / 2;
+        find_post_from_pre(pre, 11 + 1, 11 + half, post, 12, 12 + half - 1); //转换左子树
+        find_post_from_pre(pre, 11 + half + 1, h1, post, 12 + half, h2 - 1); //转换右子树
+    }
 }
 
 //14.将二叉树的叶结点按从左到右的顺序连成一个带头结点单链表，表头指针为head，叶结点的右指针域来存放单链表指针
-LinkList Link_tree(LinkTree& T) {
-    LNode* head;
+void tree_to_link_helper(LinkTree t, LinkTree& tail) {
+    if (!t->left && !t->right) {
+        tail->right = t;
+        tail = t;
+    }
+    else {
+        tree_to_link_helper(t->left, tail);
+        tree_to_link_helper(t->right, tail);
+    }
+}
+
+LinkTree tree_to_link(LinkTree& T) {
+    LinkTree head = new TreeNode;
+    LinkTree tail = head;
+    head->data = INT16_MIN;
+    head->left = nullptr;
+    head->right = tail;
+    tree_to_link_helper(T, tail);
     return head;
 }
 
@@ -234,7 +255,12 @@ int main() {
     t = build_tree_from_array(t, temp, 8, 1);
     build_tree_helper(t);
 
-    cout << width_of_tree(t);
+/*     auto leaves = tree_to_link(t)->right;
+    while (leaves) {
+        cout << leaves->data << '\n';
+        leaves = leaves->right;
+    } */
+    //cout << width_of_tree(t);
     //cout << "ancestor is:" << find_ancestor_root(t, t->left->left, t->left->right)->data;
     //print_ancestor_of_xval(t, 54);
     //del_val_x_node(t, 88);

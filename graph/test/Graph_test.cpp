@@ -108,8 +108,4 @@ int main() {
         //for (auto i : graphBFS(g, &g.vertices[1])) cout << i->no;
         //for (auto i : graphDFS(g, &g.vertices[2])) cout << i->no;
     print_bool(is_tree(tree));
-
-
-
-
 }
