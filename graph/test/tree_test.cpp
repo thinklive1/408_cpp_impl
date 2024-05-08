@@ -220,8 +220,10 @@ LinkList Link_tree(LinkTree& T) {
 T1和T2都是空的二叉树或都只有一个根结点；
 或者T1的左子树和T2的左子树相似，且T1的右子树和T2的右子树相似
 */
-bool if_tree_similar(LinkTree& T) {
-    return false;
+bool if_tree_similar(LinkTree& T1, LinkTree& T2) {
+    if (!T1 && !T2) return true;
+    if (!T1 || !T2) return false;
+    return if_tree_similar(T1->left, T2->left) && if_tree_similar(T1->right, T2->right);
 }
 
 
