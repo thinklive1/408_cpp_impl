@@ -72,6 +72,24 @@ void dfs2(ALGraph& graph, set<VNode*>& visited, vector<VNode*>& res, VNode* vet,
     }
 }
 
+//3.分别用深广度遍历查找节点i->j的路径
+vector<VNode*> searh_path_dfs(ALGraph& g, VNode* i, VNode* j) {
+    vector<VNode*> path;
+    return path;
+}
+
+vector<VNode*> searh_path_bfs(ALGraph& g, VNode* i, VNode* j) {
+    vector<VNode*> path;
+    return path;
+}
+
+//4.查找所有i->j的简单路径
+set<vector<VNode*>> search_simple_paths(ALGraph& g, VNode* i, VNode* j) {
+    vector<VNode*> path;
+    set<vector<VNode*>> res;
+    return res;
+}
+
 void print_bool(bool bit) {
     if (bit == 1) cout << "true\n";
     else cout << "false\n";
