@@ -248,6 +248,23 @@ bool if_tree_similar(LinkTree& T1, LinkTree& T2) {
 }
 
 
+//真题1.求出二叉树中所有叶结点的带权路径长度之和,需要权值乘层高
+//视data为weight
+void sum_weight_helper(LinkTree t, int& sum, int path_weight, int depth) {
+    if (!t) return;
+    if (!t->left && !t->right) {
+        sum += path_weight + t->data * depth;
+    }
+    path_weight += t->data * depth;
+    sum_weight_helper(t->left, sum, path_weight, depth + 1);
+    sum_weight_helper(t->right, sum, path_weight, depth + 1);
+}
+int sum_weight(LinkTree& t) {
+    int w = 0;
+    sum_weight_helper(t, w, 0, 0);
+    return w;
+}
+
 int main() {
     int temp[8] = { 0, 8,14, 25,54, 72, 88, 99 };
     int temp2[3] = { 3,17, 23 };
@@ -255,24 +272,24 @@ int main() {
     t = build_tree_from_array(t, temp, 8, 1);
     build_tree_helper(t);
 
-/*     auto leaves = tree_to_link(t)->right;
-    while (leaves) {
-        cout << leaves->data << '\n';
-        leaves = leaves->right;
-    } */
-    //cout << width_of_tree(t);
-    //cout << "ancestor is:" << find_ancestor_root(t, t->left->left, t->left->right)->data;
-    //print_ancestor_of_xval(t, 54);
-    //del_val_x_node(t, 88);
-    /* for (int i = 1;i < 8;i++) {
-        int j = 1;
-        cout << i << "th node: " << preOrder_kth_node(t, j, i) << '\n';
-    } */
-    //cout << num_of_twinnode(t);
-//cout << if_complete(t) << '\n';
-//cout << height2(t) << '\n';
-//cout << height(t) << '\n';
-//rev_levelOrder(t);
-//postOrder2(t);
-//levelOrder(t);
+    /*     auto leaves = tree_to_link(t)->right;
+        while (leaves) {
+            cout << leaves->data << '\n';
+            leaves = leaves->right;
+        } */
+        //cout << width_of_tree(t);
+        //cout << "ancestor is:" << find_ancestor_root(t, t->left->left, t->left->right)->data;
+        //print_ancestor_of_xval(t, 54);
+        //del_val_x_node(t, 88);
+        /* for (int i = 1;i < 8;i++) {
+            int j = 1;
+            cout << i << "th node: " << preOrder_kth_node(t, j, i) << '\n';
+        } */
+        //cout << num_of_twinnode(t);
+    //cout << if_complete(t) << '\n';
+    //cout << height2(t) << '\n';
+    //cout << height(t) << '\n';
+    //rev_levelOrder(t);
+    //postOrder2(t);
+    //levelOrder(t);
 }
