@@ -266,8 +266,33 @@ int sum_weight(LinkTree& t) {
 }
 
 //2.真题2: 将给定的表达式树（二叉树）转换为等价的中缀表达式
+void expression_helper(LinkTree t, int h) {
+    if (!t) return;
+    if (!t->left && !t->right) cout << t->data;
+    else {
+        if (h > 1) cout << '(';
+        expression_helper(t->left, h + 1);
+        cout << t->data;
+        expression_helper(t->right, h + 1);
+        if (h > 1) cout << ')';
+    }
+}
+void expression(LinkTree t) {
+    expression_helper(t, 1);
+}
 
 //3.真题3： 判定一棵采用顺序表存储的二叉树是否为二叉搜索树
+bool is_bst_helper(Arraytree t, int index) {
+    if (t.size < index * 2) return true;
+    else if (t.size == index * 2) return t.data[index] >= t.data[index * 2] && is_bst_helper(t, index * 2);
+    else return t.data[index] >= t.data[index * 2 + 1]
+        && t.data[index] <= t.data[index * 2 + 1]
+        && is_bst_helper(t, index * 2)
+        && is_bst_helper(t, index * 2 + 1);
+}
+bool is_bst(Arraytree t) {
+    return is_bst_helper(t, 1);
+}
 
 int main() {
     int temp[8] = { 0, 8,14, 25,54, 72, 88, 99 };
