@@ -1,4 +1,6 @@
 #include <iostream>
+#include <vector>
+#include <algorithm>
 using namespace std;
 #define ElemType int
 
@@ -56,6 +58,7 @@ void BubbleSort(ElemType A[], int n) {
             return; //本趟遍历后没有发生交换，说明表已经有序
     }
 }
+
 int Partition(ElemType A[], int low, int high) { //一趟划分
     ElemType pivot = A[low]; //将当前表中第一个元素设为枢轴，对表进行划分
     while (low < high) { //循环跳出条件
@@ -84,6 +87,138 @@ void SelectSort(ElemType A[], int n) {
             if (A[j] < A[min]) min = j; //更新最小元素位置
         if (min != i) swap(A[i], A[min]); //swap()函数共移动元素 3 次
     }
+}
+
+void Swap(ElemType A[], int i, int j);
+void HeadAdjust(ElemType A[], int k, int len) {
+    //函数HeadAdjust将元素k为根的子树进行调整
+    A[0] = A[k]; //A[0]暂存子树的根结点
+    for (int i = 2 * k; i < len; i *= 2) {//沿key较大的子结点向下筛选
+        if (i < len&& A[i] < A[i + 1])
+            i++; //取key较大的子结点的下标
+        if (A[0] >= A[i]) break; //筛选结束
+        else {
+            A[k] = A[i]; //将A【汀调整到双亲结点上
+            k = i; //修改k值，以便继续向下筛选
+        }
+    }
+    A[k] = A[0]; //被筛选结点的值放入最终位置
+}
+
+void BuildMaxHeap(ElemType A[], int len) {
+    for (int i = len / 2;i > 0;i--) //从 i = [n / 2]〜1, 反复调整堆
+        HeadAdjust(A, i, len);
+}
+
+void HeapSort(ElemType A[], int len) {
+    BuildMaxHeap(A, len); //初始建堆
+    for (int i = len; i > 1; i--) { //n-1趟的交换和建堆过程
+        Swap(A, i, 1); //输出堆顶元素(和堆底元素交换)
+        HeadAdjust(A, 1, i - 1); //调整，把剩余的i-1个元素整理成堆
+    }
+}
+
+ElemType* B; //辅助数组 B
+void Merge(ElemType A[], int low, int mid, int high) {
+    //表A的两段A[low...mid]和A [mid+l...high]各自有序，将它们合并成一个有序表
+    int i, j, k;
+    for (k = low;k <= high;k++)
+        B[k] = A[k]; //将A中所有元素复制到B中
+    for (i - low, j = mid + 1, k = i; i <= mid && j <= high; k++) {
+        if (B[i] <= B[j]) //比较B的左右两段中的元素
+            A[k] = B[i++]; //将较小值复制到A中
+        else
+            A[k] = B[j++];
+    }
+    while (i <= mid) A[k++] = B[i++]; //若第一个表未检测完，复制
+    while (j <= high) A[k++] = B[j++]; //若第二个表未检测完，复制
+}
+
+void MergeSort(ElemType A[], int low, int high) {
+    if (low < high) {
+        int mid = (low + high) / 2; //从中间划分两个子序列
+        MergeSort(A, low, mid); //对左侧子序列进行递归排序
+        MergeSort(A, mid + 1, high); //对右侧子序列进行递归排序
+        Merge(A, low, mid, high); //归并
+    }//if *
+}
+
+/* 计数排序 */
+// 完整实现，可排序对象，并且是稳定排序
+void countingSort(vector<int>& nums) {
+    // 1. 统计数组最大元素 m
+    int m = 0;
+    for (int num : nums) {
+        m = max(m, num);
+    }
+    // 2. 统计各数字的出现次数
+    // counter[num] 代表 num 的出现次数
+    vector<int> counter(m + 1, 0);
+    for (int num : nums) {
+        counter[num]++;
+    }
+    // 3. 求 counter 的前缀和，将“出现次数”转换为“尾索引”
+    // 即 counter[num]-1 是 num 在 res 中最后一次出现的索引
+    for (int i = 0; i < m; i++) {
+        counter[i + 1] += counter[i];
+    }
+    // 4. 倒序遍历 nums ，将各元素填入结果数组 res
+    // 初始化数组 res 用于记录结果
+    int n = nums.size();
+    vector<int> res(n);
+    for (int i = n - 1; i >= 0; i--) {
+        int num = nums[i];
+        res[counter[num] - 1] = num; // 将 num 放置到对应索引处
+        counter[num]--;              // 令前缀和自减 1 ，得到下次放置 num 的索引
+    }
+    // 使用结果数组 res 覆盖原数组 nums
+    nums = res;
+}
+
+/* 获取元素 num 的第 k 位，其中 exp = 10^(k-1) */
+int digit(int num, int exp) {
+    // 传入 exp 而非 k 可以避免在此重复执行昂贵的次方计算
+    return (num / exp) % 10;
+}
+
+/* 计数排序（根据 nums 第 k 位排序） */
+void countingSortDigit(vector<int>& nums, int exp) {
+    // 十进制的位范围为 0~9 ，因此需要长度为 10 的桶数组
+    vector<int> counter(10, 0);
+    int n = nums.size();
+    // 统计 0~9 各数字的出现次数
+    for (int i = 0; i < n; i++) {
+        int d = digit(nums[i], exp); // 获取 nums[i] 第 k 位，记为 d
+        counter[d]++;                // 统计数字 d 的出现次数
+    }
+    // 求前缀和，将“出现个数”转换为“数组索引”
+    for (int i = 1; i < 10; i++) {
+        counter[i] += counter[i - 1];
+    }
+    // 倒序遍历，根据桶内统计结果，将各元素填入 res
+    vector<int> res(n, 0);
+    for (int i = n - 1; i >= 0; i--) {
+        int d = digit(nums[i], exp);
+        int j = counter[d] - 1; // 获取 d 在数组中的索引 j
+        res[j] = nums[i];       // 将当前元素填入索引 j
+        counter[d]--;           // 将 d 的数量减 1
+    }
+    // 使用结果覆盖原数组 nums
+    for (int i = 0; i < n; i++)
+        nums[i] = res[i];
+}
+
+/* 基数排序 */
+void radixSort(vector<int>& nums) {
+    // 获取数组的最大元素，用于判断最大位数
+    int m = *max_element(nums.begin(), nums.end());
+    // 按照从低位到高位的顺序遍历
+    for (int exp = 1; exp <= m; exp *= 10)
+        // 对数组元素的第 k 位执行计数排序
+        // k = 1 -> exp = 1
+        // k = 2 -> exp = 10
+        // 即 exp = 10^(k-1)
+        countingSortDigit(nums, exp);
 }
 
 void print_arr(int A[], int n) {
