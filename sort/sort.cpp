@@ -226,10 +226,3 @@ void print_arr(int A[], int n) {
         cout << i << ":" << A[i] << '\n';
 }
 
-int main() {
-    int temp[8] = { 1,24,12,35,4,13,72,54 };
-    print_arr(temp, 8);
-    cout << "after sort:\n";
-    print_arr(Insertsort(temp, 8), 8);
-
-}
