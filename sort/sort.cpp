@@ -89,7 +89,7 @@ void SelectSort(ElemType A[], int n) {
     }
 }
 
-void Swap(ElemType A[], int i, int j);
+//void Swap(ElemType A[], int i, int j);
 void HeadAdjust(ElemType A[], int k, int len) {
     //函数HeadAdjust将元素k为根的子树进行调整
     A[0] = A[k]; //A[0]暂存子树的根结点
@@ -113,7 +113,7 @@ void BuildMaxHeap(ElemType A[], int len) {
 void HeapSort(ElemType A[], int len) {
     BuildMaxHeap(A, len); //初始建堆
     for (int i = len; i > 1; i--) { //n-1趟的交换和建堆过程
-        Swap(A, i, 1); //输出堆顶元素(和堆底元素交换)
+        //Swap(A, i, 1); //输出堆顶元素(和堆底元素交换)
         HeadAdjust(A, 1, i - 1); //调整，把剩余的i-1个元素整理成堆
     }
 }

@@ -301,11 +301,11 @@ int main() {
     t = build_tree_from_array(t, temp, 8, 1);
     build_tree_helper(t);
 
-    /*     auto leaves = tree_to_link(t)->right;
+         auto leaves = tree_to_link(t)->right;
         while (leaves) {
             cout << leaves->data << '\n';
             leaves = leaves->right;
-        } */
+        }
         //cout << width_of_tree(t);
         //cout << "ancestor is:" << find_ancestor_root(t, t->left->left, t->left->right)->data;
         //print_ancestor_of_xval(t, 54);

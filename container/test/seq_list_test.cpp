@@ -1,5 +1,19 @@
 #include "../Sequence_list.cpp"
 
+void deletemin(sqList& L) {//从顺序表中删除具有最小值的元素(假设唯一)并由函数打印被删元素的值。空出的位置由最后一个元素填上
+    int min = L.data[0];
+    int min_index = 0;
+    for (int i = 1;i < L.length;i++) {
+        if (min > L.data[i]) {
+            min = L.data[i];
+            min_index = i;
+        }
+    }
+    cout << "min is " << min << endl;
+    L.data[min_index] = L.data[L.length - 1];
+    L.length--;
+}
+
 void reverseql(sqList& L) {//逆转线性表
     for (int i = 0;i < L.length / 2;i++) {
         int temp = L.data[i];
