@@ -1,6 +1,6 @@
 #include "../Sequence_list.cpp"
 
-void deletemin(sqList& L) {//从顺序表中删除具有最小值的元素(假设唯一)并由函数打印被删元素的值。空出的位置由最后一个元素填上
+void deletemin(sqList& L) {//1.从顺序表中删除具有最小值的元素(假设唯一)并由函数打印被删元素的值。空出的位置由最后一个元素填上
     int min = L.data[0];
     int min_index = 0;
     for (int i = 1;i < L.length;i++) {
@@ -14,7 +14,7 @@ void deletemin(sqList& L) {//从顺序表中删除具有最小值的元素(假�
     L.length--;
 }
 
-void reverseql(sqList& L) {//逆转线性表
+void reverseql(sqList& L) {//2.逆转线性表
     for (int i = 0;i < L.length / 2;i++) {
         int temp = L.data[i];
         L.data[i] = L.data[L.length - i - 1];
@@ -24,7 +24,7 @@ void reverseql(sqList& L) {//逆转线性表
     printql(L);
 }
 
-void deletex(sqList L, const int& x) {//删除所有值为x的元素
+void deletex(sqList L, const int& x) {//3.删除所有值为x的元素
     int xtimes = 0;
     for (int i = 0;i < L.length;i++) {
         if (x == L.data[i]) {
@@ -48,10 +48,10 @@ void deletex(sqList L, const int& x) {//删除所有值为x的元素
     printql(L);
 }
 
-void delete_orderedql_by_range(sqList L, int i, int j) {//删除一定范围的元素
-    if (i >= j) return;
+void delete_orderedql_by_range(sqList L, int i, int j) {//4.删除有序线性表一定范围的元素
+    if (i > j) return;
     int lft = 0;
-    while (lft < L.length) {
+    while (lft < L.length) {//找到首个≥i的元素
         if (L.data[lft] >= i) {
             break;
         }
@@ -71,7 +71,7 @@ void delete_orderedql_by_range(sqList L, int i, int j) {//删除一定范围的�
     L.length = lft;
 }
 
-void delete_ql_by_range(sqList L, int s, int t) {//删除一定范围的元素
+void delete_ql_by_range(sqList L, int s, int t) {//5.删除无序线性表一定范围的元素
     int value_in_range = 0;
     for (int i = 0;i < L.length;i++) {
         if (s <= L.data[i] && L.data[i] <= t) {
@@ -83,7 +83,7 @@ void delete_ql_by_range(sqList L, int s, int t) {//删除一定范围的元素
     L.length -= value_in_range;
 }
 
-void make_unique(sqList L) {//删除相同值的元素
+void make_unique(sqList L) {//6.删除有序线性表相同值的元素
     int before = L.data[0];
     int same_values = 0;
     for (int i = 1;i < L.length;i++) {
@@ -98,7 +98,7 @@ void make_unique(sqList L) {//删除相同值的元素
     L.length -= same_values;
 }
 
-sqList mergesq(sqList L1, sqList L2) {//融合两个有序表
+sqList mergesq(sqList L1, sqList L2) {//7.融合两个有序表(归并排序青春版)
     sqList result;
     int i = 0, j = 0, k = 0;
     while (i < L1.length && j < L2.length) {
@@ -118,18 +118,19 @@ void swap(sqList& L, int i, int j) {
 }
 
 void reverse(sqList& L, int lft, int rht) {
-    for (int i = 0;i < (rht - lft) / 2;i++) {
-        swap(L, i + lft, rht - i - 1);
+    for (int i = 0;i < (rht - lft) / 2;i++) { //c++的int除法向下取整
+        swap(L, i + lft, rht - i - 1); //从0索引所以右侧减一
     }
 }
-sqList exchange(sqList L, int m, int n) {//位置互换
+
+sqList exchange(sqList L, int m, int n) {//8.位置互换
     reverse(L, 0, L.length);
     reverse(L, 0, n);
     reverse(L, n, L.length);
     return L;
 }
 
-int middle_find_x(const sqList& L, int x) {//二分查找x
+int middle_find_x(const sqList& L, int x) {//二分查找有序表内的x
     int index;int lft = 0;int rht = L.length - 1;
     while (lft <= rht) {
         index = (rht + lft) / 2;
@@ -140,7 +141,7 @@ int middle_find_x(const sqList& L, int x) {//二分查找x
     return lft;//lft必然指向首个大于等于x的元素，rht则指向首个小于等于x的元素
 }
 
-void find_x(sqList L, int x) {
+void find_x(sqList L, int x) { //9.最少时间在表中查找数值为x的元素，若找到，则将其与后继元素位置相交换，若找不到，则将其插入表中并使表中元素仍递增有序
     int i = middle_find_x(L, x);
     if (i == L.length - 1) return;
     else if (L.data[i] == x) {
@@ -156,13 +157,13 @@ void find_x(sqList L, int x) {
     }
 }
 
-void left_move(sqList L, int p) {//左移p位
+void left_move(sqList L, int p) {//整体左移p位，前面的8.就相当于左移m位或者右移n位
     reverse(L, 0, p);
     reverse(L, p, L.length);
     reverse(L, 0, L.length);
 }
 
-int find_middle_2(sqList L1, sqList L2) {
+int find_middle_2(sqList L1, sqList L2) { //二分查找的非递归实现
     int index = 0;
     int middle = 0;
     int lft = 0;int rht = 0;
@@ -181,6 +182,7 @@ int find_middle_2(sqList L1, sqList L2) {
 }
 
 int find_middle_best(sqList L1, sqList L2) {//寻找两个等长有序表的公共中位数
+    //两组中位数之间的子数组的中位数与两整个数组的公共中位数，可以不断扔掉两侧的一半，直到只剩一个
     int m1 = L1.data[(L1.length + 1) / 2];
     int m2 = L2.data[(L2.length + 1) / 2];
     int lft1, lft2, rht1, rht2;
