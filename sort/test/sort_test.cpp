@@ -35,7 +35,7 @@ void cmpCountSort(int a[], int b[], int n) {
     delete count;
 }
 /*
-a.int a [] = {25,-10,25,10,11,19} ,b[6],调用 cmpCountSort (a,b, 6)后数组b中的内容是什么？
+a.int a[6] = {25,-10,25,10,11,19} ,b[6],调用 cmpCountSort (a,b, 6)后数组b中的内容是什么？
 b.若a中含有n个元素，则算法执行过程中，元素之间的比较次数是多少？
 c.算法稳定吗？若不是，修改为稳定算法
 */

@@ -1,4 +1,5 @@
 #include "../Sequence_list.cpp"
+#include <vector>
 
 void deletemin(sqList& L) {//1.从顺序表中删除具有最小值的元素(假设唯一)并由函数打印被删元素的值。空出的位置由最后一个元素填上
     int min = L.data[0];
@@ -282,6 +283,7 @@ int findMinofTrip(int A[], int n, int B[], int m, int C[], int p) {//查找距�
     return D_min;
 }
 
+
 int main() {
     sqList* L_ptr = new sqList();
     sqList L = *L_ptr;
@@ -290,6 +292,9 @@ int main() {
     int temp[8] = { 2,3,17,22,23,25,42,67 };
     int temp2[5] = { 1,2,5,12,22 };
     int temp3[6] = { -21,-3,14,33,35,40 };
+
+    vector<int> text = { 3,2,4 };
+    twoSum(text, 6);
 
     // 使用索引遍历
     // 求数组长度：sizeof(array)/sizeof(array[0])
