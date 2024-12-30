@@ -1,6 +1,7 @@
 #include <vector>
 using namespace std;
 
+
 vector<int> twoSum(vector<int>& nums, int target) {
     vector<int> temp, result;
     for (auto i = nums.begin(); i != nums.end();i++) {
