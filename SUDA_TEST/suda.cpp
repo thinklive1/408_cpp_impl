@@ -1,5 +1,7 @@
 #include <vector>
 #include <iostream>
+#include <algorithm>
+#include <set>
 #include <sstream>
 using namespace std;
 
@@ -18,6 +20,32 @@ void read_from_line() {
         int sum = 0, num;
         while (ss >> num) sum += num;
         cout << sum << '\n';
+    }
+}
+
+void sort_strings() {
+    string s;
+    vector<string> vec;
+    while (getline(cin, s)) {
+        stringstream ss(s);//初始化语法
+        s.clear();
+        while (ss >> s) vec.push_back(s);
+        sort(vec.begin(), vec.end());
+        for (auto i = vec.begin();i != vec.end();i++) cout << *i << ' ';
+        cout << '\n';
+        vec.clear();
+    }
+}
+
+void strings_withdot() {
+    string s;
+    while (getline(cin, s)) {
+        stringstream ss(s);
+        vector<string> vec;
+        while (getline(ss, s, ',')) vec.push_back(s);//getline属于string头文件，可以指定分隔符 
+        sort(vec.begin(), vec.end());
+        for (int i = 0;i < vec.size() - 1;i++) cout << vec[i] << ',';
+        cout << vec.back() << '\n';
     }
 }
 
@@ -47,5 +75,6 @@ vector<int> twoSum(vector<int>& nums, int target) {
 
 int main() {
     //a_plus_b();
+    strings_withdot();
 }
 
