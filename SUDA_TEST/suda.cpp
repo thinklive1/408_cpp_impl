@@ -13,6 +13,7 @@ void a_plus_b() {
     while (cin >> a >> b) cout << "a+b is " << a + b << '\n';
 }
 
+//读取字符串并排序输出
 void read_from_line() {
     string l;
     while (getline(cin, l)) {
