@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <set>
 #include <sstream>
+#include <unordered_map>
 using namespace std;
 
 //c++输入输出,当cin>>从缓冲区中读取数据时，若缓冲区中第一个字符是空格、tab或换行这些分隔符时，cin>>会将其忽略并清除，继续读取下一个字符，若缓冲区为空，则继续等待。但是如果读取成功，字符后面的分隔符是残留在缓冲区的，cin>>不做
@@ -50,7 +51,7 @@ void strings_withdot() {
     }
 }
 
-vector<int> twoSum(vector<int>& nums, int target) {
+vector<int> twoSum(vector<int>& nums, int target) {// 暴力解法，O(N^2)
     vector<int> temp, result;
     for (auto i = nums.begin(); i != nums.end();i++) {
         temp.push_back(target - *i);
@@ -74,8 +75,24 @@ vector<int> twoSum(vector<int>& nums, int target) {
     return result;
 };
 
+vector<int> twoSum2(vector<int>& nums, int target) {
+    /*
+    对数组的每个元素：
+        1. 查找哈希表是否有其元素值对应的<k,v>,如果有，该<k,v>的v值就是其匹配的数组索引号
+        2. 将target与该元素值的差作为k，其索引作为v写入哈希表
+    */
+    unordered_map<int, int> hash;
+    for (int i = 0; i < nums.size();i++) {
+        if (hash.find(nums[i]) != hash.end()) return { i,hash[nums[i]] };
+        hash[target - nums[i]] = i;
+    }
+    return {};
+}
+
 int main() {
     //a_plus_b();
-    strings_withdot();
+    vector <int> test = { 3,2,4 };
+    //strings_withdot();
+    auto si = twoSum2(test, 6);
 }
 
