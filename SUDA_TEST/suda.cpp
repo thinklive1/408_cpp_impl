@@ -112,11 +112,89 @@ int singleNumber(vector<int>& nums) {
     return temp;
 }
 
+struct ListNode {
+    int val;
+    ListNode* next;
+    ListNode(int x) : val(x), next(NULL) {}
+};
+
+//寻找链表公共节点
+ListNode* getIntersectionNode(ListNode* headA, ListNode* headB) {
+    int m = 0, n = 0;
+    ListNode* t = headA->next;
+    while (t != NULL) {
+        ++m;
+        t = t->next;
+    }
+    t = headB->next;
+    while (t != NULL) {
+        ++n;
+        t = t->next;
+    }
+    if (m > n) for (int i = 0;i < m - n;i++) headA = headA->next;
+    else for (int i = 0;i < n - m;i++) headB = headB->next;
+    while (headA && headA != headB) { headA = headA->next;headB = headB->next; }
+    return headA;
+}
+
+ListNode* getIntersectionNode_better(ListNode* headA, ListNode* headB) {//相当于同时遍历A+B和B+A
+    if (headA == NULL || headB == NULL) {
+        return NULL;
+    }
+    ListNode* pA = headA;
+    ListNode* pB = headB;
+    while (pA != pB) {
+        pA = (pA == NULL ? headB : pA->next);
+        pB = (pB == NULL ? headA : pB->next);
+    }
+    return pA;
+}
+
+
+ListNode* build_nodelist(ListNode* L, vector<int> lst) {
+    ListNode* r = L;
+    for (int i = 0; i < lst.size(); i++) {
+        ListNode* s = new ListNode(lst[i]); // 创建新结点
+        r->next = s;
+        r = s;
+    }
+    r->next = NULL;
+    return L;
+}
+
+ListNode* build_nodelist_withouthead(ListNode* L, vector<int> lst) {
+    ListNode* r = L;
+    r->val = lst[0];
+    for (int i = 1; i < lst.size(); i++) {
+        ListNode* s = new ListNode(lst[i]); // 创建新结点
+        r->next = s;
+        r = s;
+    }
+    r->next = NULL;
+    return L;
+}
+
+ListNode* reverseList(ListNode* head) {
+    if (!head || !head->next) return head;
+    ListNode* p = head, * q = head->next;
+    p->next = nullptr;
+    while (q) {
+        auto t = q->next;
+        q->next = p;
+        p = q;
+        q = t;
+    }
+    return p;
+}
+
 int main() {
     //a_plus_b();
-    vector <int> test = { 0,0 };
+    vector <int> test = { 1,2,3,4,5 };
+    ListNode temp(65535);
+    reverseList(build_nodelist_withouthead(&temp, test));
+
     //strings_withdot();
     //auto si = twoSum2(test, 6);
-    moveZeroes(test);
+    //moveZeroes(test);
 }
 
