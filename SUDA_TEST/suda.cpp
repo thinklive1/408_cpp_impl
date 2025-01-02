@@ -89,10 +89,34 @@ vector<int> twoSum2(vector<int>& nums, int target) {
     return {};
 }
 
+//给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。必须在不复制数组的情况下原地对数组进行操作。
+void moveZeroes(vector<int>& nums) {
+    int n = nums.size(), slow = 0, fast = 0;
+    if (n <= 1) return;
+    while (fast < n) {
+        if (nums[slow] == 0) {
+            while (fast < n && nums[fast] == 0) ++fast;
+            if (fast >= n) return;
+            nums[slow] = nums[fast];
+            nums[fast] = 0;
+            ++slow;
+        }
+        else { ++slow;++fast; }
+    }
+}
+
+//一个非空整数数组 nums ，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素
+int singleNumber(vector<int>& nums) {
+    int temp = 0;
+    for (int i : nums) temp ^= i;
+    return temp;
+}
+
 int main() {
     //a_plus_b();
-    vector <int> test = { 3,2,4 };
+    vector <int> test = { 0,0 };
     //strings_withdot();
-    auto si = twoSum2(test, 6);
+    //auto si = twoSum2(test, 6);
+    moveZeroes(test);
 }
 

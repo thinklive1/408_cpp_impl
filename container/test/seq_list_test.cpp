@@ -294,7 +294,6 @@ int main() {
     int temp3[6] = { -21,-3,14,33,35,40 };
 
     vector<int> text = { 3,2,4 };
-    twoSum(text, 6);
 
     // 使用索引遍历
     // 求数组长度：sizeof(array)/sizeof(array[0])
