@@ -4,6 +4,9 @@
 #include <set>
 #include <sstream>
 #include <unordered_map>
+#include <stack>
+#include <queue>
+#define null INT16_MIN
 using namespace std;
 
 //c++输入输出,当cin>>从缓冲区中读取数据时，若缓冲区中第一个字符是空格、tab或换行这些分隔符时，cin>>会将其忽略并清除，继续读取下一个字符，若缓冲区为空，则继续等待。但是如果读取成功，字符后面的分隔符是残留在缓冲区的，cin>>不做
@@ -115,7 +118,9 @@ int singleNumber(vector<int>& nums) {
 struct ListNode {
     int val;
     ListNode* next;
-    ListNode(int x) : val(x), next(NULL) {}
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode* next) : val(x), next(next) {}
 };
 
 //寻找链表公共节点
@@ -151,7 +156,7 @@ ListNode* getIntersectionNode_better(ListNode* headA, ListNode* headB) {//相当
 }
 
 
-ListNode* build_nodelist(ListNode* L, vector<int> lst) {
+ListNode* build_nodelist_withhead(ListNode* L, vector<int> lst) {
     ListNode* r = L;
     for (int i = 0; i < lst.size(); i++) {
         ListNode* s = new ListNode(lst[i]); // 创建新结点
@@ -187,14 +192,281 @@ ListNode* reverseList(ListNode* head) {
     return p;
 }
 
+//判断该链表是否为回文链表
+bool isPalindrome(ListNode* head) {
+    ListNode* slow = head, * fast = head;
+    while (fast) {
+        slow = slow->next;
+        fast = fast->next;
+        if (!fast) break;
+        fast = fast->next;
+    }
+    slow = reverseList(slow);
+    while (head && slow) {
+        if (head->val != slow->val) return 0;
+        head = head->next;
+        slow = slow->next;
+    }
+    return 1;
+}
+
+bool hasCycle(ListNode* head) {
+    ListNode* slow = head, * fast = head;
+    while (fast) {
+        if (slow == fast) return 1;
+        slow = slow->next;
+        fast = fast->next;
+        if (!fast) return 0;
+    }
+    return 0;
+}
+
+//合并两个有序链表
+ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+    ListNode* head = new ListNode{}; //声明一个新指针不会调用默认构造函数
+    ListNode* tail = head, * t;
+    while (list1 && list2) {
+        t = list1->val < list2->val ? list1 : list2;
+        if (t == list1) list1 = list1->next;
+        else list2 = list2->next;
+        tail->next = t;
+        tail = tail->next;
+    }
+    tail->next = (!list1) ? list2 : list1;
+    return head->next;
+}
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode* left, TreeNode* right) : val(x), left(left), right(right) {}
+};
+
+using LinkTree = TreeNode*;
+
+/* 获取索引为 i 节点的左子节点的索引 */
+int left(int i) {
+    return 2 * i + 1;
+}
+
+/* 获取索引为 i 节点的右子节点的索引 */
+int right(int i) {
+    return 2 * i + 2;
+}
+
+//从数组构建链式树，如果值是INT_MIN则视为nullptr
+LinkTree build_tree_from_array(LinkTree T, vector<int> values, int start = 0) {
+    int size = values.size();
+    if (values[start] == INT16_MIN) return nullptr;
+    T->val = values[start];
+    T->left = (left(start) < size) ? build_tree_from_array(new TreeNode, values, left((start))) : nullptr;
+    T->right = (right(start) < size) ? build_tree_from_array(new TreeNode, values, right((start))) : nullptr;
+    return T;
+}
+
+vector<int> inorderTraversal(TreeNode* root) {
+    if (!root) return {};
+    vector<int> res;
+    stack<TreeNode*> st;
+    while (root || !st.empty()) {
+        if (root) {
+            st.emplace(root);
+            root = root->left;
+        }
+        else {
+            root = st.top();st.pop();
+            res.push_back(root->val);
+            root = root->right;
+        }
+    }
+    return res;
+}
+
+//假设当前遍历到的节点为 x，将 x 的左子树中最右边的节点的右孩子指向 x，这样在左子树遍历完成后我们通过这个指向走回了 x，且能通过这个指向知晓我们已经遍历完成了左子树，而不用再通过栈来维护
+vector<int> inorderTraversal_best(TreeNode* root) {
+    vector<int> res;
+    TreeNode* predecessor = nullptr;
+
+    while (root != nullptr) {
+        if (root->left != nullptr) {
+            // predecessor 节点就是当前 root 节点向左走一步，然后一直向右走至无法走为止
+            predecessor = root->left;
+            while (predecessor->right != nullptr && predecessor->right != root) {
+                predecessor = predecessor->right;
+            }
+
+            // 让 predecessor 的右指针指向 root，继续遍历左子树
+            if (predecessor->right == nullptr) {
+                predecessor->right = root;
+                root = root->left;
+            }
+            // 说明左子树已经访问完了，我们需要断开链接
+            else {
+                res.push_back(root->val);
+                predecessor->right = nullptr;
+                root = root->right;
+            }
+        }
+        // 如果没有左孩子，则直接访问右孩子
+        else {
+            res.push_back(root->val);
+            root = root->right;
+        }
+    }
+    return res;
+}
+
+int maxDepth(TreeNode* root) {
+    queue<TreeNode*> qe1, qe2;
+    qe1.emplace(root);
+    int dep = 0, signal = 0;
+    while (1) {
+        if (qe1.empty()) return dep;
+        while (!qe1.empty()) {
+            if (qe1.front()->left) qe2.push(qe1.front()->left);
+            if (qe1.front()->right) qe2.push(qe1.front()->right);
+            qe1.pop();
+        }
+        ++dep;
+        swap(qe1, qe2);
+    }
+}
+
+//交换给定节点的左右子树
+LinkTree& exchange_lr(LinkTree& root) {
+    if (!root) return root;
+    queue<TreeNode*> qe;
+    qe.push(root);
+    while (!qe.empty()) {
+        TreeNode* t = qe.front();qe.pop();
+        if (t->left) qe.push(t->left);
+        if (t->right) qe.push(t->right);
+        swap(t->left, t->right);
+    }
+    return root;
+}
+
+TreeNode* invertTree(TreeNode* root) {
+    if (!root) return root;
+    queue<TreeNode*> qe;
+    qe.push(root);
+    while (!qe.empty()) {
+        TreeNode* t = qe.front();qe.pop();
+        if (t->left) qe.push(t->left);
+        if (t->right) qe.push(t->right);
+        swap(t->left, t->right);
+    }
+    return root;
+}
+
+TreeNode* invertTree2(TreeNode* root) {
+    if (!root) {
+        return nullptr;
+    }
+    TreeNode* left = invertTree2(root->left);
+    TreeNode* right = invertTree2(root->right);
+    root->left = right;
+    root->right = left;
+    return root;
+}
+
+void invert_helper(TreeNode* node) {
+    if (!node) return;
+    swap(node->left, node->right);
+    invert_helper(node->left);
+    invert_helper(node->right);
+}
+
+TreeNode* invertTree3(TreeNode* root) {
+    invert_helper(root);
+    return root;
+}
+
+bool isCenterSymmetric(TreeNode* root) {
+    if (!root) return 1;
+    if (root->left && root->right && root->left->val == root->right->val) return isCenterSymmetric(root->left) && isCenterSymmetric(root->right);
+    else if (!root->left && !root->right) return 1;
+    return 0;
+}
+
+bool isSymmetric(TreeNode* root) {
+    if (!root) return 1;
+    stack<TreeNode*> st1, st2;
+    TreeNode* p1 = root;
+    TreeNode* p2 = p1;
+    st1.emplace(p1);
+    st2.emplace(p2);
+    while (!st1.empty()) {
+        p1 = st1.top();st1.pop();
+        p2 = st2.top();st2.pop();
+        if ((p1 && !p2) || (p2 && !p1)) return 0;
+        else if (!p1) continue;
+        else if (p1->val != p2->val) return 0;
+        else {
+            st1.push(p1->left);
+            st1.push(p1->right);
+            st2.push(p2->right);
+            st2.push(p2->left);
+        }
+    }
+    return 1;
+}
+
+bool check(TreeNode* p, TreeNode* q) {
+    if (!p && !q) return true;
+    if (!p || !q) return false;
+    return p->val == q->val && check(p->left, q->right) && check(p->right, q->left);
+}
+
+bool isSymmetric2(TreeNode* root) {
+    if (!root) return 1;
+    return check(root->left, root->right);
+}
+
+int node_height(TreeNode* t) {
+    if (!t)
+        return 0;
+    else {
+        int temp = 1 + max(node_height(t->left), node_height(t->right));
+        return temp;
+    }
+}
+
+void diameterOfBinaryTree_helper(TreeNode* root, int& m) {
+    if (!root) return;
+    diameterOfBinaryTree_helper(root->left, m);
+    diameterOfBinaryTree_helper(root->right, m);
+    m = max(m, node_height(root->right) + node_height(root->left));
+}
+
+//二叉树的 直径 是指树中任意两个节点之间最长路径的 长度 。这条路径可能经过也可能不经过根节点
+int diameterOfBinaryTree(TreeNode* root) {
+    int dia = 0;
+    diameterOfBinaryTree_helper(root, dia);
+    return dia;
+}
+
 int main() {
     //a_plus_b();
     vector <int> test = { 1,2,3,4,5 };
+    vector <int> test2 = { 1,3,4 };
     ListNode temp(65535);
-    reverseList(build_nodelist_withouthead(&temp, test));
+    ListNode temp2(65535);
+    TreeNode* tree1 = new TreeNode;
+    tree1 = build_tree_from_array(tree1, test, 0);
+    //reverseList(build_nodelist_withouthead(&temp, test));
+    //isPalindrome(build_nodelist_withouthead(&temp, test));
+    //mergeTwoLists(build_nodelist_withouthead(&temp, test), build_nodelist_withouthead(&temp2, test2));
+    //inorderTraversal(build_tree_from_array(tree1, test, 1));
+    //cout << maxDepth(build_tree_from_array(tree1, test));
+    //invertTree2(tree1);
+    //cout << isSymmetric(tree1);
+    cout << diameterOfBinaryTree(tree1);
 
     //strings_withdot();
     //auto si = twoSum2(test, 6);
     //moveZeroes(test);
 }
-
