@@ -464,7 +464,7 @@ int main() {
     //cout << maxDepth(build_tree_from_array(tree1, test));
     //invertTree2(tree1);
     //cout << isSymmetric(tree1);
-    cout << diameterOfBinaryTree(tree1);
+    //cout << diameterOfBinaryTree(tree1);
 
     //strings_withdot();
     //auto si = twoSum2(test, 6);
