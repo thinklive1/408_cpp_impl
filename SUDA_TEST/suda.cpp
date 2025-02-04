@@ -4,7 +4,9 @@
 #include <set>
 #include <sstream>
 #include <unordered_map>
+#include <unordered_set>
 #include <stack>
+#include <set>
 #include <queue>
 #define null INT16_MIN
 using namespace std;
@@ -449,10 +451,129 @@ int diameterOfBinaryTree(TreeNode* root) {
     return dia;
 }
 
+TreeNode* sortedArrayToBST_helper(vector<int>& nums, int head, int tail, TreeNode* parent, bool lft) {
+    if (head > tail) return nullptr;
+    if (head == tail) return new TreeNode(nums[head]);
+    TreeNode* node = new TreeNode;
+    int mid = (tail + head) / 2;
+    node->val = nums[mid];
+    node->left = sortedArrayToBST_helper(nums, head, mid - 1, parent, 1);
+    node->right = sortedArrayToBST_helper(nums, mid + 1, tail, parent, 0);
+    return node;
+}
+
+TreeNode* sortedArrayToBST(vector<int>& nums) {
+    if (nums.empty()) return nullptr;
+    int mid = nums.size() / 2;
+    TreeNode* root = new TreeNode(nums[mid]);
+    root->left = sortedArrayToBST_helper(nums, 0, mid - 1, root, 1);
+    root->right = sortedArrayToBST_helper(nums, mid + 1, nums.size() - 1, root, 0);
+    return root;
+}
+
+//给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。如果目标值不存在于数组中，返回它将会被按顺序插入的位置
+int searchInsert(vector<int>& nums, int target) {
+    int head = 0, tail = nums.size() - 1;
+    while (head <= tail) {
+        int mid = (head + tail) / 2;
+        if (nums[mid] == target) return mid;
+        else if (nums[mid] < target) head = mid + 1;
+        else tail = mid - 1;
+    }
+    return head;
+}
+
+//判断括号字符串是否有效
+bool isValid(string s) {
+    stack<char> st;
+    set<char> se = { '(','{','[' };
+    if (se.find(s[0]) == se.end()) return 0;
+    unordered_map<char, char> ma = { {')','('},{']','['},{'}','{'} };
+    for (char c : s) {
+        if (se.find(c) != se.end()) st.push(c);//左括号直接入栈
+        else {//c是右括号
+            if (st.empty() || ma[c] != st.top()) return 0;
+            else st.pop();
+        }
+    }
+    return st.empty();
+}
+
+int majorityElement(vector<int>& nums) {
+    vector<int> times;
+    return 0;
+}
+
+
+
+int maxProfit(vector<int>& prices) {
+    int prev_min = INT16_MAX, pro = 0;;
+    for (int i : prices) {
+        prev_min = min(i, prev_min);
+        pro = max(pro, i - prev_min);
+    }
+    return pro;
+}
+
+int climbStairs(int n) {
+    if (n <= 2) return n;
+    int steps = 2;
+    vector<int> memory = { 0,1,2 };
+    while (steps < n) {
+        memory[0] = memory[1] + memory[2];
+        memory[1] = memory[0];
+        swap(memory[1], memory[2]);
+        steps++;
+    }
+    return memory[0];
+}
+
+vector<vector<string>> groupAnagrams(vector<string>& strs) {
+    unordered_map<string, vector<string>> um;
+    vector<vector<string>> res;
+    for (auto s : strs) {
+        string t = s;
+        sort(t.begin(), t.end());
+        um[t].emplace_back(s);
+    }
+    for (auto i : um) res.push_back(i.second);
+    return res;
+}
+
+int longestConsecutive(vector<int>& nums) {
+    if (nums.empty()) return 0;
+    unordered_set<int> us;
+    int max_len = 0;
+    for (auto i : nums) us.emplace(i);
+    while (!us.empty()) {
+        int i = *us.begin();
+        int len = 0;
+        while (us.count(i + 1)) ++i;
+        while (us.count(i)) {
+            ++len;
+            us.erase(i);
+            --i;
+        }
+        max_len = max(max_len, len);
+    }
+    return max_len;
+}
+
+int maxArea(vector<int>& height) {
+    int i = 0, j = height.size() - 1, max_ar = (j - i) * min(height[i], height[j]);
+    while (i < j) {
+        if (height[i] < height[j]) ++i;
+        else --j;
+        max_ar = max(max_ar, (j - i) * min(height[i], height[j]));
+    }
+    return max_ar;
+}
+
 int main() {
     //a_plus_b();
-    vector <int> test = { 1,2,3,4,5 };
+    vector <int> test = { 0,3,7,2,5,8,4,6,0,1,2,1 };
     vector <int> test2 = { 1,3,4 };
+    vector<string> strs = { "eat","tea","tan","ate","nat","bat" };
     ListNode temp(65535);
     ListNode temp2(65535);
     TreeNode* tree1 = new TreeNode;
@@ -465,6 +586,12 @@ int main() {
     //invertTree2(tree1);
     //cout << isSymmetric(tree1);
     //cout << diameterOfBinaryTree(tree1);
+    //auto bst1 = sortedArrayToBST(test);
+    //cout << isValid("(){}}{");
+    //cout << maxProfit(test);
+    //cout << climbStairs(5);
+    //groupAnagrams(strs);
+    //cout << longestConsecutive(test);
 
     //strings_withdot();
     //auto si = twoSum2(test, 6);
