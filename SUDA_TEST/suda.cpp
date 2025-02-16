@@ -131,6 +131,33 @@ struct ListNode {
     ListNode(int x, ListNode* next) : val(x), next(next) {}
 };
 
+class Node {
+public:
+    int val;
+    Node* next;
+    Node* random;
+
+    Node(int _val) {
+        val = _val;
+        next = NULL;
+        random = NULL;
+    }
+};
+
+Node* build_random_node(vector<vector<int>> vec) {
+    vector<Node*> nodes;
+    for (auto row : vec) {
+        Node* n = new Node(row[0]);
+        nodes.emplace_back(n);
+    }
+    for (int i = 0;i < vec.size();i++) {
+        if (i != vec.size() - 1) nodes[i]->next = nodes[i + 1];
+        else nodes[i]->next = nullptr;
+        nodes[i]->random = vec[i][1] == 65536 ? nullptr : nodes[vec[i][1]];
+    }
+    return nodes[0];
+}
+
 //寻找链表公共节点
 ListNode* getIntersectionNode(ListNode* headA, ListNode* headB) {
     int m = 0, n = 0;
@@ -765,16 +792,207 @@ int maxSubArray(vector<int>& nums) {
 
 */
 
+vector<vector<int>> merge_intervals(vector<vector<int>>& intervals) {
+    if (intervals.empty()) return {};
+    if (intervals.size() == 1) return intervals;
+    sort(intervals.begin(), intervals.end());
+    vector<vector<int>> res = { intervals[0] };
+    for (int i = 1;i < intervals.size();i++) {
+        int tail = res.size() - 1;
+        if (intervals[i][0] <= res[tail][1]) {
+            res[tail][1] = max(intervals[i][1], res[tail][1]);
+        }
+        else res.emplace_back(intervals[i]);
+    }
+    return res;
+}
 
+void reverse(vector<int>& nums, int start, int end) {
+    for (int i = 0;i < (end - start + 1) / 2;i++) swap(nums[start + i], nums[end - i]);
+}
+
+void right_rotate_vector(vector<int>& nums, int k) {
+    k %= nums.size();
+    if (k == 0) return;
+    reverse(nums, 0, nums.size() - k - 1);
+    reverse(nums, nums.size() - k, nums.size() - 1);
+    reverse(nums, 0, nums.size() - 1);
+    prit_container(nums);
+}
+
+vector<int> productExceptSelf(vector<int>& nums) {
+    const int size = nums.size();
+    vector<int> res(nums.size());
+    res[0] = 1;
+    for (int i = 1;i < size;i++) res[i] = res[i - 1] * nums[i - 1];
+    int right_product = nums[size - 1];
+    for (int j = size - 2;j >= 0;--j) {
+        res[j] *= right_product;
+        right_product *= nums[j];
+    }
+    return res;
+}
+
+void setZeroes(vector<vector<int>>& matrix) {
+
+}
+
+/*
+
+设链表中环外部分的长度为 a。slow 指针进入环后，又走了 b 的距离与 fast 相遇,到环前最后一个结点剩下距离为c。此时，fast 指针已经走完了环的 n 圈，因此它走过的总距离为 a+n(b+c)+b=a+(n+1)b+nc
+即a+(n+1)b+nc=2(a+b)⟹a=c+(n−1)(b+c)
+当发现 slow 与 fast 相遇时，我们再额外使用一个指针 ptr。起始，它指向链表头部；随后，它和 slow 每次向后移动一个位置。最终，它们会在入环点相遇
+*/
+
+ListNode* detectCycle(ListNode* head) {
+    ListNode* slow = head, * fast = head;
+    while (fast != nullptr) {
+        slow = slow->next;
+        fast = fast->next;
+        if (fast == nullptr) return nullptr;
+        fast = fast->next;
+        if (fast == slow) {
+            ListNode* ptr = head;
+            while (ptr != slow) {
+                ptr = ptr->next;
+                slow = slow->next;
+            }
+            return ptr;
+        }
+    }
+    return nullptr;
+}
+
+void print_linknode(ListNode* l) {
+    int i = 0;
+    while (l) {
+        cout << i << ": " << l->val << '\n';
+        ++i;
+        l = l->next;
+    }
+}
+
+ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+    ListNode* head = nullptr, * tail = nullptr;
+    int carry = 0;
+    while (l1 || l2) {
+        int n1 = l1 ? l1->val : 0;
+        int n2 = l2 ? l2->val : 0;
+        int sum = n1 + n2 + carry;
+        if (!head) {
+            head = tail = new ListNode(sum % 10);
+        }
+        else {
+            tail->next = new ListNode(sum % 10);
+            tail = tail->next;
+        }
+        carry = sum / 10;
+        if (l1) {
+            l1 = l1->next;
+        }
+        if (l2) {
+            l2 = l2->next;
+        }
+    }
+    if (carry > 0) {
+        tail->next = new ListNode(carry);
+    }
+    return head;
+}
+
+ListNode* removeNthFromEnd(ListNode* head, int n) {
+    ListNode* fast = head, * slow = head, * pre = slow;
+    for (int i = 0;i < n; i++) {
+        fast = fast->next;
+    }
+    while (fast) {
+        pre = slow;
+        slow = slow->next;
+        fast = fast->next;
+    }
+    if (pre == slow) return head->next;
+    pre->next = slow->next;
+    return head;
+}
+
+ListNode* swapPairs(ListNode* head) {//两两交换相邻的节点，并返回交换后链表的头节点
+    ListNode* dummyHead;
+    dummyHead->val = 0;
+    dummyHead->next = head;
+    ListNode* temp = dummyHead;
+    while (temp->next != nullptr && temp->next->next != nullptr) {//之后两个节点都存在时才可以交换
+        ListNode* node1 = temp->next;
+        ListNode* node2 = temp->next->next;
+        temp->next = node2;
+        node1->next = node2->next;
+        node2->next = node1;
+        temp = node1;
+    }
+    ListNode* res = dummyHead->next;
+    return res;
+}
+
+Node* copyRandomList(Node* head) {
+    unordered_map<Node*, Node*> cachedNode;
+    if (head == nullptr) return head;
+    if (!cachedNode.count(head)) {
+        Node* headNew = new Node(head->val);
+        cachedNode[head] = headNew;
+        headNew->next = copyRandomList(head->next);
+        headNew->random = copyRandomList(head->random);
+    }
+    return cachedNode[head];
+}
+
+Node* copyRandomList2(Node* head) {
+    unordered_map<Node*, Node*> cachedNode;
+    if (head == nullptr) return head;
+    Node* t = head;
+    while (t) {
+        Node* headNew = new Node(t->val);
+        cachedNode[t] = headNew;
+        t = t->next;
+    }
+    for (auto n : cachedNode) {
+        Node* n0 = n.first;
+        Node* n1 = n.second;
+        n1->next = n0->next == nullptr ? nullptr : cachedNode[n0->next];
+        n1->random = n0->random == nullptr ? nullptr : cachedNode[n0->random];
+    }
+    return cachedNode[head];
+}
+
+vector<vector<int>> levelOrder(TreeNode* root) {
+    vector <vector <int>> ret;
+    if (!root) {
+        return ret;
+    }
+    queue <TreeNode*> q;
+    q.push(root);
+    while (!q.empty()) {
+        int currentLevelSize = q.size();
+        ret.push_back(vector <int>());
+        for (int i = 1; i <= currentLevelSize; ++i) {
+            auto node = q.front(); q.pop();
+            ret.back().push_back(node->val);
+            if (node->left) q.push(node->left);
+            if (node->right) q.push(node->right);
+        }
+    }
+    return ret;
+}
 
 int main() {
     //a_plus_b();
-    vector <int> test = { -2,-1 };
+    vector <int> test = { 1,2,3,4 ,5 };
     vector <int> test2 = { 1,3,4 };
+    vector<vector<int>> test3 = { {7,65536} ,{13,0},{11,4},{10,2},{1,0} };
     vector<string> strs = { "eat","tea","tan","ate","nat","bat" };
     ListNode temp(65535);
     ListNode temp2(65535);
     TreeNode* tree1 = new TreeNode;
+    ListNode* ln = new ListNode;
+    ln = build_nodelist_withouthead(ln, test);
     tree1 = build_tree_from_array(tree1, test, 0);
     //reverseList(build_nodelist_withouthead(&temp, test));
     //isPalindrome(build_nodelist_withouthead(&temp, test));
@@ -795,7 +1013,14 @@ int main() {
     //prit_container(findAnagrams("cbaebabacd", "abc"));
     //prit_container(findAnagrams("ababababab", "aab"));
     //cout << subarraySum(test, 2);
-    cout << maxSubArray(test);
+    //cout << maxSubArray(test);
+    //merge_intervals(test3);
+    //right_rotate_vector(test, 3);
+    //prit_container(productExceptSelf(test));
+    //print_linknode(removeNthFromEnd(ln, 2));
+    //copyRandomList2(build_random_node(test3));
+
+
 
     //strings_withdot();
     //auto si = twoSum2(test, 6);
