@@ -982,9 +982,260 @@ vector<vector<int>> levelOrder(TreeNode* root) {
     return ret;
 }
 
+void isValidBST_helper(TreeNode* root, long long min_val, long long max_val, bool& res) {
+    if (!res || !root) return;//检验失败或root为空则退出
+    if (min_val >= root->val || root->val >= max_val) { res = 0;  return; }
+    isValidBST_helper(root->left, min_val, root->val, res);
+    isValidBST_helper(root->right, root->val, max_val, res);
+}
+bool isValidBST(TreeNode* roots) {
+    bool i = 1;
+    isValidBST_helper(roots, INT32_MIN, INT32_MAX, i);
+    return i;
+}
+
+int node_num_of_tree(TreeNode* root) {
+    if (!root) return 0;
+    else return 1 + node_num_of_tree(root->left) + node_num_of_tree(root->right);
+}
+
+int kthSmallest_helper(TreeNode* root, const int& k, int n) {//n表示root这个节点的大小顺序
+    if (!root) return 0;
+    if (n == k) return root->val;
+    else if (n < k) return kthSmallest_helper(root->right, k, node_num_of_tree(root->right->left) + n + 1);//由于题目必然有解，此时root必存在右孩子
+    else return kthSmallest_helper(root->left, k, n - node_num_of_tree(root->left->right) - 1);
+}
+
+int kthSmallest(TreeNode* root, int k) {
+    return kthSmallest_helper(root, k, 1 + node_num_of_tree(root->left));
+}
+
+vector<int> rightSideView(TreeNode* root) {
+    if (!root) return {};
+    queue<TreeNode*> qe1, qe2;
+    qe1.emplace(root);
+    vector<int> res = { root->val };
+    while (1) {
+        while (!qe1.empty()) {
+            auto t = qe1.front();
+            qe1.pop();
+            if (t->left) qe2.emplace(t->left);
+            if (t->right) qe2.emplace(t->right);
+        }
+        if (qe2.empty()) return res;
+        res.emplace_back(qe2.back()->val);
+        swap(qe1, qe2);
+    }
+    return res;
+}
+
+//对于当前节点，如果其左子节点不为空，则在其左子树中找到最右边的节点，作为前驱节点，将当前节点的右子节点赋给前驱节点的右子节点，然后将当前节点的左子节点赋给当前节点的右子节点，并将当前节点的左子节点设为空。对当前节点处理结束后，继续处理链表中的下一个节点，直到所有节点都处理结束
+void flatten_best(TreeNode* root) {
+    TreeNode* curr = root;
+    while (curr != nullptr) {
+        if (curr->left != nullptr) {
+            TreeNode* next = curr->left;
+            TreeNode* predecessor = next;
+            while (predecessor->right != nullptr) {
+                predecessor = predecessor->right;
+            }
+            predecessor->right = curr->right;//对一个节点来说，其右孩子先序遍历的前驱是左孩子最右的子节点
+            curr->left = nullptr;
+            curr->right = next;
+        }
+        curr = curr->right;
+    }
+}
+
+//维护上一个访问的节点prev，每次访问一个节点时，令当前访问的节点为curr，将prev的左子节点设为null以及将prev的右子节点设为curr，然后将curr赋值给prev，进入下一个节点的访问，直到遍历结束。需要注意的是，初始时prev为null，只有在prev不为null时才能对prev的左右子节点进行更新
+void flatten(TreeNode* root) {
+    if (root == nullptr) {
+        return;
+    }
+    auto stk = stack<TreeNode*>();
+    stk.push(root);
+    TreeNode* prev = nullptr;
+    while (!stk.empty()) {
+        TreeNode* curr = stk.top(); stk.pop();
+        if (prev != nullptr) {
+            prev->left = nullptr;
+            prev->right = curr;
+        }
+        TreeNode* left = curr->left, * right = curr->right;
+        if (right != nullptr) stk.push(right);
+        if (left != nullptr) stk.push(left);
+        prev = curr;
+    }
+}
+
+
+TreeNode* BuildTree_helper(const vector<int>& preorder, const vector<int>& inorder, int preorder_left, int preorder_right, int inorder_left, int inorder_right, const unordered_map<int, int>& index) {
+    if (preorder_left > preorder_right) return nullptr;
+    // 前序遍历中的第一个节点就是根节点
+    int preorder_root = preorder_left;
+    // 在中序遍历中定位根节点
+    int inorder_root = index.at(preorder[preorder_root]);
+    TreeNode* root = new TreeNode(preorder[preorder_root]);
+    int size_left_subtree = inorder_root - inorder_left;
+    // 递归地构造左子树，并连接到根节点
+    // 先序遍历中「从 左边界+1 开始的 size_left_subtree」个元素就对应了中序遍历中「从 左边界 开始到 根节点定位-1」的元素
+    root->left = BuildTree_helper(preorder, inorder, preorder_left + 1, preorder_left + size_left_subtree, inorder_left, inorder_root - 1, index);
+    // 递归地构造右子树，并连接到根节点
+    // 先序遍历中「从 左边界+1+左子树节点数目 开始到 右边界」的元素就对应了中序遍历中「从 根节点定位+1 到 右边界」的元素
+    root->right = BuildTree_helper(preorder, inorder, preorder_left + size_left_subtree + 1, preorder_right, inorder_root + 1, inorder_right, index);
+    return root;
+}
+
+TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+    unordered_map<int, int> index;
+    int n = preorder.size();
+    // 构造哈希映射，用于快速定位根节点
+    for (int i = 0; i < n; ++i) {
+        index[inorder[i]] = i;
+    }
+    return BuildTree_helper(preorder, inorder, 0, n - 1, 0, n - 1, index);
+}
+
+
+int pathSum_helper(TreeNode* root, long long curr, int targetSum, unordered_map<long long, int>& prefix) {
+    if (!root) return 0;
+    int ret = 0;
+    curr += root->val;
+    if (prefix.count(curr - targetSum)) ret = prefix[curr - targetSum];
+    prefix[curr]++;
+    ret += pathSum_helper(root->left, curr, targetSum, prefix);
+    ret += pathSum_helper(root->right, curr, targetSum, prefix);
+    prefix[curr]--;
+    return ret;
+}
+
+int pathSum(TreeNode* root, int targetSum) {
+    unordered_map<long long, int> prefix;
+    prefix[0] = 1;
+    return pathSum_helper(root, 0, targetSum, prefix);
+}
+
+void lowestCommonAncestor_helper(TreeNode* root, unordered_map<int, TreeNode*>& fa) {//构建子节点到父节点的链接
+    if (root->left != nullptr) {
+        fa[root->left->val] = root;
+        lowestCommonAncestor_helper(root->left, fa);
+    }
+    if (root->right != nullptr) {
+        fa[root->right->val] = root;
+        lowestCommonAncestor_helper(root->right, fa);
+    }
+}
+TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+    unordered_map<int, TreeNode*> fa;
+    unordered_map<int, bool> vis;
+    fa[root->val] = nullptr;
+    lowestCommonAncestor_helper(root, fa);
+    while (p != nullptr) {//一路标记p的父节点
+        vis[p->val] = true;
+        p = fa[p->val];
+    }
+    while (q != nullptr) {
+        if (vis[q->val]) return q;
+        q = fa[q->val];
+    }
+    return nullptr;
+}
+
+void permute_helper(vector<vector<int>>& res, vector<int>& output, int first, int len) {
+    // 所有数都填完了
+    if (first == len) {
+        res.emplace_back(output);
+        return;
+    }
+    for (int i = first; i < len; ++i) {//[0,first]部分为已填过的数
+        // 动态维护数组
+        swap(output[i], output[first]);
+        // 继续递归填下一个数
+        permute_helper(res, output, first + 1, len);
+        // 撤销操作
+        swap(output[i], output[first]);
+    }
+}
+
+vector<vector<int>> permute(vector<int>& nums) {
+    vector<vector<int> > res;
+    permute_helper(res, nums, 0, (int)nums.size());
+    return res;
+}
+
+vector<vector<int>> subsets(vector<int>& nums) {//全子集
+    vector<int> t;
+    vector<vector<int>> res;
+    int n = nums.size();
+    for (int mask = 0; mask < (1 << n); ++mask) {//n位二进制掩码表示子集
+        t.clear();
+        for (int i = 0; i < n; ++i) if (mask & (1 << i)) t.push_back(nums[i]);
+        res.push_back(t);
+    }
+    return res;
+}
+
+void letterCombinations_helper(vector<string>& combinations, const unordered_map<char, string>& phoneMap, const string& digits, int index, string& combination) {
+    if (index == digits.length()) {
+        combinations.push_back(combination);
+    }
+    else {
+        char digit = digits[index];
+        const string& letters = phoneMap.at(digit);
+        for (const char& letter : letters) {
+            combination.push_back(letter);
+            letterCombinations_helper(combinations, phoneMap, digits, index + 1, combination);
+            combination.pop_back();
+        }
+    }
+}
+vector<string> letterCombinations(string digits) {//电话数字能表示的字母组合
+    if (digits.empty()) return {};
+    vector<string> combinations;
+    unordered_map<char, string> phoneMap{
+        {'2', "abc"},
+        {'3', "def"},
+        {'4', "ghi"},
+        {'5', "jkl"},
+        {'6', "mno"},
+        {'7', "pqrs"},
+        {'8', "tuv"},
+        {'9', "wxyz"}
+    };
+    string combination;
+    letterCombinations_helper(combinations, phoneMap, digits, 0, combination);
+    return combinations;
+}
+
+//杨辉三角
+vector<vector<int>> generate(int numRows) {
+    if (numRows == 1) return { {1} };
+    vector<vector<int>> res = { {1} };
+    for (int i = 1;i <= numRows - 1;++i) {
+        vector<int> row = { res[i - 1][0] };
+        for (int j = 1;j < i;++j) row.emplace_back(res[i - 1][j - 1] + res[i - 1][j]);
+        row.emplace_back(res[i - 1][i - 1]);
+        res.emplace_back(row);
+    }
+    return res;
+}
+
+//沿街的房屋每间都藏有一定的现金,如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警,计算一夜之内能够偷窃到的最高金额
+int rob(const vector<int>& nums) {
+    int size = nums.size();
+    if (size == 1) return nums[0];
+    vector<int> dp = vector<int>(size, 0);
+    dp[0] = nums[0];
+    dp[1] = max(nums[0], nums[1]);
+    for (int i = 2; i < size; i++) {
+        dp[i] = max(dp[i - 2] + nums[i], dp[i - 1]);
+    }
+    return dp[size - 1];
+}
+
 int main() {
     //a_plus_b();
-    vector <int> test = { 1,2,3,4 ,5 };
+    vector <int> test = { 2,7,9,3,1 };
     vector <int> test2 = { 1,3,4 };
     vector<vector<int>> test3 = { {7,65536} ,{13,0},{11,4},{10,2},{1,0} };
     vector<string> strs = { "eat","tea","tan","ate","nat","bat" };
@@ -1019,6 +1270,13 @@ int main() {
     //prit_container(productExceptSelf(test));
     //print_linknode(removeNthFromEnd(ln, 2));
     //copyRandomList2(build_random_node(test3));
+    //cout << isValidBST(tree1);
+    //cout << kthSmallest(tree1, 4);
+    //prit_container(rightSideView(tree1));
+    //flatten(tree1);
+    //cout << pathSum(tree1, 8);
+    //permute(test);
+    cout << rob(test);
 
 
 
