@@ -1276,7 +1276,7 @@ int main() {
     //flatten(tree1);
     //cout << pathSum(tree1, 8);
     //permute(test);
-    cout << rob(test);
+    //cout << rob(test);
 
 
 
