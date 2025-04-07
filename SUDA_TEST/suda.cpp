@@ -532,11 +532,6 @@ bool isValid(string s) {
     return st.empty();
 }
 
-int majorityElement(vector<int>& nums) {
-    vector<int> times;
-    return 0;
-}
-
 
 
 int maxProfit(vector<int>& prices) {
@@ -1233,11 +1228,99 @@ int rob(const vector<int>& nums) {
     return dp[size - 1];
 }
 
+//如果一个数组有大于一半的数相同，那么任意删去两个不同的数字，新数组还是会有相同的性质。
+int majorityElement(vector<int>& nums) {
+    int candidate = -1;
+    int count = 0;
+    for (int num : nums) {
+        if (num == candidate)
+            ++count;
+        else if (--count < 0) {
+            candidate = num;
+            count = 1;
+        }
+    }
+    return candidate;
+}
+
+void sortColors(vector<int>& nums) {
+    vector<int> colors = { 0,0,0 };
+    for (int i : nums) {
+        ++colors[i];
+    }
+}
+
+//字符串匹配麻烦之处在于从任何索引开始都可能匹配上，但不管怎么说，如果能匹配，那么必然有一个开始点，因此可以穷举整个矩阵
+//虽然无法避免穷举矩阵的开销，但可以在遍历过程中设置一个bisited数组，避免单次匹配过程中重复
+
+void exist_helper(const vector<vector<char>>& board, const string& word, const vector<pair<int, int>>& dire, int index, pair<int, int> coord, bool& res, vector<vector<bool>>& visited) {
+    if (res || word[index] != board[coord.first][coord.second]) return;
+    else if (index == word.length() - 1) res = 1;
+    else {
+        visited[coord.first][coord.second] = 1;
+        for (auto dir : dire) {
+            if (res) break;
+            int x = coord.first + dir.first; int y = coord.second + dir.second;
+            if (x < 0 || y < 0 || x >= board.size() || y >= board[0].size() || visited[x][y])continue;
+            exist_helper(board, word, dire, index + 1, { x,y }, res, visited);
+        }
+        visited[coord.first][coord.second] = 0;
+    }
+}
+
+bool exist(vector<vector<char>>& board, string word) {
+    bool res = 0;
+    int m = board.size(), n = board[0].size();
+    vector<vector<bool>> visited(m, vector<bool>(n, 0));
+    vector<pair<int, int>> directions = { {-1,0},{1,0},{0,1},{0,-1} };
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            exist_helper(board, word, directions, 0, { i,j }, res, visited);
+            if (res) return true;
+        }
+    }
+    return res;
+}
+
+
+
+bool midsearch(vector<int>& nums, int target) {
+    int head = 0, tail = nums.size() - 1;
+    while (head <= tail) {
+        int mid = (head + tail) / 2;
+        if (nums[mid] == target) return 1;
+        else if (nums[mid] < target) head = mid + 1;
+        else tail = mid - 1;
+    }
+    return 0;
+}
+
+bool searchMatrix(vector<vector<int>>& matrix, int target) {
+    //先找一个行首小于等于目标，下一行首大于目标的行
+    int up = 0, row = matrix.size() - 1, down = row, mid = down / 2;
+    while (up <= down) {
+        mid = (up + down) / 2;
+        if (mid == row || (matrix[mid][0] <= target && matrix[mid + 1][0] > target)) return midsearch(matrix[mid], target);
+        else if (matrix[mid][0] > target) down = mid - 1;
+        else up = mid + 1;
+    }
+    return midsearch(matrix[mid], target);
+}
+
+void test_io() {
+    string s;
+    getline(cin, s);  //读入 string 类型 s
+    cout << "First: " << s << endl;  //输出 s
+    getline(cin, s);  //在此读入
+    cout << "Second: " << s << endl;  //再次输出 s
+}
+
 int main() {
+    test_io();
     //a_plus_b();
     vector <int> test = { 2,7,9,3,1 };
     vector <int> test2 = { 1,3,4 };
-    vector<vector<int>> test3 = { {7,65536} ,{13,0},{11,4},{10,2},{1,0} };
+    vector<vector<int>> test3 = { {1,3,5,7},{10,11,16,20},{23,30,34,60} };
     vector<string> strs = { "eat","tea","tan","ate","nat","bat" };
     ListNode temp(65535);
     ListNode temp2(65535);
@@ -1277,6 +1360,7 @@ int main() {
     //cout << pathSum(tree1, 8);
     //permute(test);
     //cout << rob(test);
+    //cout << searchMatrix(test3, 31);
 
 
 
